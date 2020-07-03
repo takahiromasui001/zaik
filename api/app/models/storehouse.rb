@@ -8,4 +8,5 @@
 #  updated_at   :datetime         not null
 #
 class Storehouse < ApplicationRecord
+  has_many :stocks
 end

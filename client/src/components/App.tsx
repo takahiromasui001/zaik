@@ -14,8 +14,7 @@ function App() {
     const getStocks = async () => {
       const response = await axios.get('http://localhost:3000/api/v1/stocks/')
 
-      console.log('response')
-      console.log(response)
+      setStocks(response.data)
     }
 
     getStocks()
@@ -25,7 +24,7 @@ function App() {
     <div className="App">
       <Content>
         <SearchForm />
-        <StockList />
+        <StockList stocks={stocks}/>
       </Content>
     </div>
   )

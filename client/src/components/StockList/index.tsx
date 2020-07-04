@@ -2,7 +2,12 @@ import React from 'react'
 import Stock from '../Stock'
 import { Container } from './style'
 
-const StockList: React.FC = () => {
+type TStock = { id: number, name: string }
+type TStockList = { stocks: TStock[] }
+
+const StockList: React.FC<TStockList> = (props) => {
+  const { stocks } = props
+  
   const stockProps = [
     { name: '在庫AAA' },
     { name: '在庫BBB' },
@@ -14,8 +19,8 @@ const StockList: React.FC = () => {
     { name: '在庫CCA' },
   ]
 
-  const stockList = stockProps.map((prop) => {
-    return <Stock {...prop} />
+  const stockList = stocks.map((prop: TStock) => {
+    return <Stock {...prop} key={prop.id}/>
   })
   return <Container>{stockList}</Container>
 }

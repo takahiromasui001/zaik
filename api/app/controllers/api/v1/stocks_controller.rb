@@ -41,7 +41,7 @@ module Api
       end
 
       def stock_params
-        params.permit(:name, :storehouse_id, :id)
+        params.permit(:name, :storehouse_id, :id, :file)
       end
     end
   end

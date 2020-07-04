@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 2020_07_03_125137) do
   create_table "stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", comment: "品名"
     t.string "color_number", comment: "色番号"
-    t.integer "quantitym", comment: "残量"
+    t.integer "quantity", comment: "残量"
     t.datetime "manufacturing_date", comment: "製造年月日"
     t.boolean "used", comment: "中古"
     t.bigint "storehouse_id", null: false, comment: "倉庫ID"

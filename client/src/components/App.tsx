@@ -4,6 +4,7 @@ import axios from 'axios'
 import 'antd/dist/antd.css'
 import StockList from './StockList'
 import SearchForm from './SearchForm'
+import FileUploader from './FileUploader'
 
 const { Content } = Layout
 
@@ -25,6 +26,7 @@ function App() {
       <Content>
         <SearchForm />
         <StockList stocks={stocks}/>
+        <FileUploader />
       </Content>
     </div>
   )

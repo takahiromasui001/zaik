@@ -19,24 +19,14 @@ function App() {
       setStocks(response.data)
     }
 
-    const getStocksImage = async () => {
-      const response = await axios.get(
-        'http://localhost:3000/api/v1/stocks/1/download',
-        { responseType: 'arraybuffer' }
-      )
-      const base64Data = Buffer.from(response.data, 'binary').toString('base64')
-      setImage(base64Data)
-    }
-
     getStocks()
-    getStocksImage()
   }, [])
 
   return (
     <div className="App">
       <Content>
         <SearchForm />
-        <StockList stocks={stocks} image={image} />
+        <StockList stocks={stocks} />
         <FileUploader />
       </Content>
     </div>

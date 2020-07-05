@@ -15,12 +15,6 @@ module Api
         render json: result.to_json
       end
 
-      def download
-        pp "download stock #{params[:id]}"
-        data = @stock.file.first.download
-        send_data(data, type: 'image/png', filename: 'download.jpg')
-      end
-
       def create
         stock = Stock.new(stock_params)
 

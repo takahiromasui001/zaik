@@ -22,4 +22,5 @@
 #
 class Stock < ApplicationRecord
   belongs_to :storehouse
+  has_many_attached :file
 end

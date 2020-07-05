@@ -1,14 +1,26 @@
 module Api
   module V1
     class StocksController < ApplicationController
-      before_action :set_stock, only: [:show, :update, :destroy]
+      before_action :set_stock, only: [:show, :update, :destroy, :download]
       def index
-        stocks = Stock.all
-        render json: stocks
+        stocks = Stock.with_attached_file
+        result = stocks.map do |stock|
+          id = stock.id
+          {
+            id: stock.id,
+            name: stock.name,
+            file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
+          }
+        end
+        render json: result
       end
 
       def show
-        render json: @stock
+        result = {
+          id: @stock.id,
+          name: @stock.name,
+        }
+        render json: result.to_json
       end
 
       def create
@@ -41,7 +53,7 @@ module Api
       end
 
       def stock_params
-        params.permit(:name, :storehouse_id, :id)
+        params.permit(:name, :storehouse_id, :id, :file)
       end
     end
   end

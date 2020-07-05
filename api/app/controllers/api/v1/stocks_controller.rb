@@ -3,8 +3,16 @@ module Api
     class StocksController < ApplicationController
       before_action :set_stock, only: [:show, :update, :destroy, :download]
       def index
-        stocks = Stock.all
-        render json: stocks
+        stocks = Stock.with_attached_file
+        result = stocks.map do |stock|
+          id = stock.id
+          {
+            id: stock.id,
+            name: stock.name,
+            file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
+          }
+        end
+        render json: result
       end
 
       def show

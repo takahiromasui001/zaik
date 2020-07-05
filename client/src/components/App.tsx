@@ -10,6 +10,7 @@ const { Content } = Layout
 
 function App() {
   const [stocks, setStocks] = useState([])
+  const [image, setImage] = useState('')
 
   useEffect(() => {
     const getStocks = async () => {
@@ -18,14 +19,24 @@ function App() {
       setStocks(response.data)
     }
 
+    const getStocksImage = async () => {
+      const response = await axios.get(
+        'http://localhost:3000/api/v1/stocks/1/download',
+        { responseType: 'arraybuffer' }
+      )
+      const base64Data = Buffer.from(response.data, 'binary').toString('base64')
+      setImage(base64Data)
+    }
+
     getStocks()
+    getStocksImage()
   }, [])
 
   return (
     <div className="App">
       <Content>
         <SearchForm />
-        <StockList stocks={stocks}/>
+        <StockList stocks={stocks} image={image} />
         <FileUploader />
       </Content>
     </div>

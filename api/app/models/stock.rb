@@ -6,7 +6,7 @@
 #  color_number(色番号)           :string(255)
 #  manufacturing_date(製造年月日) :datetime
 #  name(品名)                     :string(255)
-#  quantitym(残量)                :integer
+#  quantity(残量)                :integer
 #  used(中古)                     :boolean
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null

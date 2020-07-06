@@ -1,5 +1,5 @@
 import React from 'react'
-import Stock from '../Stock'
+import StockItem from './StockItem'
 import { Container } from './style'
 
 type TStock = { id: number; name: string; file: File }
@@ -9,7 +9,7 @@ const StockList: React.FC<TStockList> = (props) => {
   const { stocks } = props
 
   const stockList = stocks.map((prop: TStock) => {
-    return <Stock {...prop} key={prop.id} />
+    return <StockItem {...prop} key={prop.id} />
   })
   return <Container>{stockList}</Container>
 }

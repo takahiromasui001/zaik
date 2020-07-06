@@ -8,7 +8,7 @@ type TStockProps = {
   file: any
 }
 
-const Stock: React.FC<TStockProps> = (props) => {
+const StockItem: React.FC<TStockProps> = (props) => {
   const { name, file } = props
   const dataURLFile = `data:image/png;base64,${file}`
   const img = file ? (
@@ -33,4 +33,4 @@ const Stock: React.FC<TStockProps> = (props) => {
   )
 }
 
-export default Stock
+export default StockItem

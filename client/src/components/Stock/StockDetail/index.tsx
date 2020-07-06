@@ -1,7 +1,10 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
 const StockDetail = () => {
-  return <div>StockDetail</div>
+  let { id } = useParams()
+
+  return <div>{`StockDetail No.${id}`}</div>
 }
 
 export default StockDetail

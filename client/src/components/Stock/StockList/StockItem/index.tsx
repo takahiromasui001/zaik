@@ -1,16 +1,20 @@
 import React from 'react'
 import { Card, Empty } from 'antd'
+import { useHistory } from 'react-router-dom'
 
 const { Meta } = Card
 
 type TStockProps = {
+  id: number
   name: string
   file: any
 }
 
 const StockItem: React.FC<TStockProps> = (props) => {
-  const { name, file } = props
+  const { id, name, file } = props
   const dataURLFile = `data:image/png;base64,${file}`
+  let history = useHistory()
+
   const img = file ? (
     <img
       src={dataURLFile}
@@ -26,12 +30,17 @@ const StockItem: React.FC<TStockProps> = (props) => {
     />
   )
 
+  const handleClick = () => {
+    history.push(`/${id}`)
+  }
+
   return (
     <Card
       hoverable
       style={{ width: 120 }}
       cover={img}
       bodyStyle={{ padding: '8px 12px' }}
+      onClick={handleClick}
     >
       <Meta title={name} />
     </Card>

@@ -6,7 +6,7 @@ import axios from 'axios'
 
 type TStock = { id: number; name: string; file: File }
 
-const StockList: React.FC = (props) => {
+const StockList: React.FC = () => {
   const [stocks, setStocks] = useState([])
   const [searchParam, setSearchParam] = useState('')
 
@@ -22,8 +22,8 @@ const StockList: React.FC = (props) => {
     getStocks()
   }, [searchParam])
 
-  const stockList = stocks.map((prop: TStock) => {
-    return <StockItem {...prop} key={prop.id} />
+  const stockList = stocks.map((stock: TStock) => {
+    return <StockItem {...stock} key={stock.id} />
   })
 
   return (

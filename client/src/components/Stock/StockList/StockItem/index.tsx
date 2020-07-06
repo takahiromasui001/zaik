@@ -12,7 +12,12 @@ const StockItem: React.FC<TStockProps> = (props) => {
   const { name, file } = props
   const dataURLFile = `data:image/png;base64,${file}`
   const img = file ? (
-    <img src={dataURLFile} height="100px" style={{ margin: '10px 0' }} />
+    <img
+      src={dataURLFile}
+      height="100px"
+      style={{ margin: '10px 0' }}
+      alt="stock images"
+    />
   ) : (
     <Empty
       image={Empty.PRESENTED_IMAGE_SIMPLE}

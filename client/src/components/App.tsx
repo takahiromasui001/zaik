@@ -10,22 +10,24 @@ const { Content } = Layout
 
 function App() {
   const [stocks, setStocks] = useState([])
-  const [image, setImage] = useState('')
+  const [searchParam, setSearchParam] = useState('')
 
   useEffect(() => {
     const getStocks = async () => {
-      const response = await axios.get('http://localhost:3000/api/v1/stocks/')
+      const response = await axios.get(
+        `http://localhost:3000/api/v1/stocks/?search=${searchParam}`
+      )
 
       setStocks(response.data)
     }
 
     getStocks()
-  }, [])
+  }, [searchParam])
 
   return (
     <div className="App">
       <Content>
-        <SearchForm />
+        <SearchForm setSearchParam={setSearchParam} />
         <StockList stocks={stocks} />
         <FileUploader />
       </Content>

@@ -4,12 +4,17 @@ import { Container } from './style'
 
 const { Search } = Input
 
-const SearchForm: React.FC = () => {
+type TSearchFormProps = {
+  setSearchParam: React.Dispatch<React.SetStateAction<string>>
+}
+
+const SearchForm: React.FC<TSearchFormProps> = (prop) => {
+  const { setSearchParam } = prop
   return (
     <Container>
       <Search
         placeholder="品名で検索"
-        onSearch={(value) => console.log(value)}
+        onSearch={(value) => setSearchParam(value)}
         style={{ width: 350 }}
       />
     </Container>

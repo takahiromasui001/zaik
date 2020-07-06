@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
+import StockDetailFormModal from './StockDetailFormModal'
 
-type TStock = {
+export type TStock = {
   name: string
   colorNumber: string
   manufacturingDate: string
@@ -65,6 +66,7 @@ const StockDetail = () => {
           {stock.storehouse}
         </Descriptions.Item>
       </Descriptions>
+      <StockDetailFormModal {...stock} />
     </>
   )
 }

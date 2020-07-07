@@ -4,10 +4,10 @@
 #
 #  id                             :bigint           not null, primary key
 #  color_number(色番号)           :string(255)
+#  condition(使用状況)            :integer
 #  manufacturing_date(製造年月日) :datetime
 #  name(品名)                     :string(255)
-#  quantity(残量)                :integer
-#  used(中古)                     :boolean
+#  quantity(残量)                 :integer
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null
 #  storehouse_id(倉庫ID)          :bigint           not null
@@ -23,4 +23,6 @@
 class Stock < ApplicationRecord
   belongs_to :storehouse
   has_many_attached :file
+
+  enum condition: { new: 0, used: 1 }
 end

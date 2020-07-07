@@ -16,18 +16,7 @@ module Api
       end
 
       def show
-        result = {
-          id: @stock.id,
-          name: @stock.name,
-          colorNumber: @stock.color_number,
-          manufacturingDate: @stock.manufacturing_date,
-          quantity: @stock.quantity,
-          used: @stock.used,
-          storehouse: @stock.storehouse.name,
-          file: @stock.file.present? ? Base64.encode64(@stock.file.first.download) : nil
-        }
-
-        render json: result.to_json
+        render json: stock_response(@stock).to_json
       end
 
       def create

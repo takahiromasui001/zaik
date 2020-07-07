@@ -7,6 +7,11 @@ import EditStockFormModal from './EditStockFormModal'
 import FileUploader from '../shared/FileUploader'
 import { TStock } from '..'
 
+export const condition: { [key: string]: string } = {
+  unused: '新品',
+  used: '中古',
+}
+
 const StockDetail = () => {
   let { id } = useParams()
   const [stock, setStock] = useState({} as TStock)
@@ -52,7 +57,7 @@ const StockDetail = () => {
           {new Date(stock.manufacturingDate).toLocaleDateString()}
         </Descriptions.Item>
         <Descriptions.Item label="新品・中古">
-          {stock.used ? '中古' : '新品'}
+          {condition[stock.condition]}
         </Descriptions.Item>
         <Descriptions.Item label="保管場所">
           {stock.storehouse}

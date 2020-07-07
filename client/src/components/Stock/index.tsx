@@ -10,7 +10,7 @@ export type TStock = {
   colorNumber: string
   manufacturingDate: string
   quantity: number
-  used: boolean
+  condition: string
   storehouse: string
   file: any
 }

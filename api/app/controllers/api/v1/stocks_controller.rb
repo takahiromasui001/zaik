@@ -35,6 +35,7 @@ module Api
         if @stock.update(snake_stock_params)
           render json: stock_response(@stock)
         else
+          debugger
           render json: { status: 'ERROR' }
         end
       end
@@ -51,7 +52,7 @@ module Api
       end
 
       def stock_params
-        params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :used, :storehouse, :stock)
+        params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :condition, :storehouse, :stock)
       end
 
       def stock_response(stock)
@@ -61,7 +62,7 @@ module Api
           colorNumber: stock.color_number,
           manufacturingDate: stock.manufacturing_date,
           quantity: stock.quantity,
-          used: stock.used,
+          condition: stock.condition,
           storehouse: stock.storehouse.name,
           file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
         }

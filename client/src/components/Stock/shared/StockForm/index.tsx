@@ -1,8 +1,10 @@
 import React from 'react'
-import { Form, Input, DatePicker } from 'antd'
+import { Form, Input, DatePicker, Select } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { TStock } from '../..'
 import moment from 'moment'
+
+const { Option } = Select
 
 type TStockFormProps = {
   stock?: TStock
@@ -38,8 +40,11 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
       <Form.Item name="quantity" label="残量">
         <Input />
       </Form.Item>
-      <Form.Item name="used" label="新品・中古">
-        <Input />
+      <Form.Item name="condition" label="新品・中古">
+        <Select>
+          <Option value="unused">新品</Option>
+          <Option value="used">中古</Option>
+        </Select>
       </Form.Item>
       <Form.Item name="storehouse_id" label="保管場所">
         <Input />

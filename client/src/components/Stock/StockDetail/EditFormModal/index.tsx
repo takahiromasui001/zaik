@@ -5,9 +5,9 @@ import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../../shared/StockForm'
 
-type TStockDetailFormModalProps = Partial<TStock>
+type TEditStockFormModalProps = Partial<TStock>
 
-const StockDetailFormModal: React.FC<TStockDetailFormModalProps> = (props) => {
+const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
@@ -46,4 +46,4 @@ const StockDetailFormModal: React.FC<TStockDetailFormModalProps> = (props) => {
   )
 }
 
-export default StockDetailFormModal
+export default EditStockFormModal

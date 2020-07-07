@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
-import StockDetailFormModal from './StockDetailFormModal'
+import EditStockFormModal from './EditFormModal'
 import FileUploader from '../FileUploader'
 
 export type TStock = {
@@ -68,7 +68,7 @@ const StockDetail = () => {
         </Descriptions.Item>
       </Descriptions>
       <div style={{ marginBottom: 20 }} />
-      <StockDetailFormModal {...stock} />
+      <EditStockFormModal {...stock} />
       <FileUploader id={id} stock={stock} setStock={setStock} />
     </>
   )

@@ -3,15 +3,13 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
+import EditStockFormModal from './EditStockFormModal'
+import FileUploader from '../shared/FileUploader'
+import { TStock } from '..'
 
-type TStock = {
-  name: string
-  colorNumber: string
-  manufacturingDate: string
-  quantity: number
-  used: boolean
-  storehouse: string
-  file: any
+export const condition: { [key: string]: string } = {
+  unused: '新品',
+  used: '中古',
 }
 
 const StockDetail = () => {
@@ -19,7 +17,7 @@ const StockDetail = () => {
   const [stock, setStock] = useState({} as TStock)
 
   useEffect(() => {
-    const getStocks = async () => {
+    const getStock = async () => {
       const response = await axios.get(
         `http://localhost:3000/api/v1/stocks/${id}`
       )
@@ -27,7 +25,7 @@ const StockDetail = () => {
       setStock(response.data)
     }
 
-    getStocks()
+    getStock()
   }, [])
 
   const dataURLFile = (file: any) => `data:image/png;base64,${file}`
@@ -56,15 +54,18 @@ const StockDetail = () => {
         </Descriptions.Item>
         <Descriptions.Item label="残量">{stock.quantity}</Descriptions.Item>
         <Descriptions.Item label="製造年月日">
-          {stock.manufacturingDate}
+          {new Date(stock.manufacturingDate).toLocaleDateString()}
         </Descriptions.Item>
         <Descriptions.Item label="新品・中古">
-          {stock.used ? '中古' : '新品'}
+          {condition[stock.condition]}
         </Descriptions.Item>
         <Descriptions.Item label="保管場所">
-          {stock.storehouse}
+          {stock.storehouse?.name}
         </Descriptions.Item>
       </Descriptions>
+      <div style={{ marginBottom: 20 }} />
+      <EditStockFormModal stock={stock} setStock={setStock} />
+      <FileUploader id={stock.id} setStock={setStock} />
     </>
   )
 }

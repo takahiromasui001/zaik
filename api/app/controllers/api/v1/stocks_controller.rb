@@ -16,34 +16,26 @@ module Api
       end
 
       def show
-        result = {
-          id: @stock.id,
-          name: @stock.name,
-          colorNumber: @stock.color_number,
-          manufacturingDate: @stock.manufacturing_date,
-          quantity: @stock.quantity,
-          used: @stock.used,
-          storehouse: @stock.storehouse.name,
-          file: @stock.file.present? ? Base64.encode64(@stock.file.first.download) : nil
-        }
-
-        render json: result.to_json
+        render json: stock_response(@stock).to_json
       end
 
       def create
-        stock = Stock.new(stock_params)
+        snake_stock_params = stock_params.transform_keys { |k| k.underscore }
+        stock = Stock.new(snake_stock_params)
 
         if stock.save
-          render json: stock
+          render json: stock_response(stock)
         else
           render json: { status: 'ERROR' }
         end
       end
 
       def update
-        if @stock.update(stock_params)
-          render json: @stock
+        snake_stock_params = stock_params.transform_keys { |k| k.underscore }
+        if @stock.update(snake_stock_params)
+          render json: stock_response(@stock)
         else
+          debugger
           render json: { status: 'ERROR' }
         end
       end
@@ -60,7 +52,23 @@ module Api
       end
 
       def stock_params
-        params.permit(:name, :storehouse_id, :id, :file)
+        params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :condition, :storehouse, :stock)
+      end
+
+      def stock_response(stock)
+        {
+          id: stock.id,
+          name: stock.name,
+          colorNumber: stock.color_number,
+          manufacturingDate: stock.manufacturing_date,
+          quantity: stock.quantity,
+          condition: stock.condition,
+          storehouse: {
+            id: stock.storehouse.id,
+            name: stock.storehouse.name
+          },
+          file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
+        }
       end
     end
   end

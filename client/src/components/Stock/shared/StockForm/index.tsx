@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Input, DatePicker } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { TStock } from '../..'
+import moment from 'moment'
 
 type TStockFormProps = {
   stock?: TStock
@@ -10,13 +11,20 @@ type TStockFormProps = {
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
   const { stock, form } = props
+  const stockForForm =
+    stock !== undefined
+      ? {
+          ...stock,
+          manufacturingDate: moment(stock.manufacturingDate),
+        }
+      : stock
 
   return (
     <Form
       form={form}
       layout="vertical"
       name="form_in_modal"
-      initialValues={{ ...stock }}
+      initialValues={{ ...stockForForm }}
     >
       <Form.Item name="name" label="品名">
         <Input />

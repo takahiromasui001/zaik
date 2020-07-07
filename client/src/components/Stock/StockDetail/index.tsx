@@ -12,7 +12,7 @@ const StockDetail = () => {
   const [stock, setStock] = useState({} as TStock)
 
   useEffect(() => {
-    const getStocks = async () => {
+    const getStock = async () => {
       const response = await axios.get(
         `http://localhost:3000/api/v1/stocks/${id}`
       )
@@ -20,7 +20,7 @@ const StockDetail = () => {
       setStock(response.data)
     }
 
-    getStocks()
+    getStock()
   }, [])
 
   const dataURLFile = (file: any) => `data:image/png;base64,${file}`
@@ -49,7 +49,7 @@ const StockDetail = () => {
         </Descriptions.Item>
         <Descriptions.Item label="残量">{stock.quantity}</Descriptions.Item>
         <Descriptions.Item label="製造年月日">
-          {stock.manufacturingDate}
+          {new Date(stock.manufacturingDate).toLocaleDateString()}
         </Descriptions.Item>
         <Descriptions.Item label="新品・中古">
           {stock.used ? '中古' : '新品'}

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import axios from 'axios'
-import { TStock } from '../StockDetail'
 import { FileUploaderWrapper } from './style'
+import { TStock } from '../..'
 
 type TFileUploader = {
   id: number

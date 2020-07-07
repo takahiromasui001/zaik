@@ -3,8 +3,7 @@ import StockItem from './StockItem'
 import { GridContainer } from './style'
 import SearchForm from './SearchForm'
 import axios from 'axios'
-
-type TStock = { id: number; name: string; file: File }
+import { TStock } from '..'
 
 const StockList: React.FC = () => {
   const [stocks, setStocks] = useState([])

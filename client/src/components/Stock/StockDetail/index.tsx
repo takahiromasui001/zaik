@@ -5,17 +5,7 @@ import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockFormModal from './EditStockFormModal'
 import FileUploader from '../FileUploader'
-
-export type TStock = {
-  id: number
-  name: string
-  colorNumber: string
-  manufacturingDate: string
-  quantity: number
-  used: boolean
-  storehouse: string
-  file: any
-}
+import { TStock } from '..'
 
 const StockDetail = () => {
   let { id } = useParams()

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input } from 'antd'
-import { TStock } from '../../Stock/StockDetail'
 import { FormInstance } from 'antd/lib/form'
+import { TStock } from '..'
 
 type TStockFormProps = {
   stock: Partial<TStock>

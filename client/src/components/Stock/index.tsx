@@ -18,6 +18,11 @@ export type TStock = {
   file: any
 }
 
+export type TStorehouse = {
+  id: number
+  name: string
+}
+
 const Stock = () => {
   return (
     <Router>

@@ -1,8 +1,9 @@
 import React from 'react'
 import { Form, Input, DatePicker, Select } from 'antd'
 import { FormInstance } from 'antd/lib/form'
-import { TStock } from '../..'
+import { TStock, TStorehouse } from '../..'
 import moment from 'moment'
+import useStorehouseList from './useStorehouseList'
 
 const { Option } = Select
 
@@ -18,8 +19,14 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
       ? {
           ...stock,
           manufacturingDate: moment(stock.manufacturingDate),
+          storehouse_id: stock.storehouse.id,
         }
       : stock
+  const storehouseList: TStorehouse[] = useStorehouseList()
+
+  const storehouseOptions = storehouseList.map((storehouse: TStorehouse) => (
+    <Option value={storehouse.id}>{storehouse.name}</Option>
+  ))
 
   return (
     <Form
@@ -47,7 +54,11 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
         </Select>
       </Form.Item>
       <Form.Item name="storehouse_id" label="保管場所">
-        <Input />
+        <Select>
+          {storehouseList.map((storehouse: TStorehouse) => (
+            <Option value={storehouse.id}>{storehouse.name}</Option>
+          ))}
+        </Select>
       </Form.Item>
     </Form>
   )

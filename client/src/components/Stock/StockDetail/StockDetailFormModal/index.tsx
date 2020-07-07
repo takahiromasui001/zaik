@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Modal, Form, Input } from 'antd'
+import React, { useState } from 'react'
+import { Button, Modal, Form } from 'antd'
 import { TStock } from '..'
 import axios from 'axios'
 import { useParams } from 'react-router'
+import StockForm from '../../../shared/StockForm'
 
 type TStockDetailFormModalProps = Partial<TStock>
 
@@ -39,31 +40,7 @@ const StockDetailFormModal: React.FC<TStockDetailFormModalProps> = (props) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          name="form_in_modal"
-          initialValues={{ ...props }}
-        >
-          <Form.Item name="name" label="品名">
-            <Input />
-          </Form.Item>
-          <Form.Item name="colorNumber" label="色番号">
-            <Input />
-          </Form.Item>
-          <Form.Item name="manufacturingDate" label="製造年月日">
-            <Input />
-          </Form.Item>
-          <Form.Item name="quantity" label="残量">
-            <Input />
-          </Form.Item>
-          <Form.Item name="used" label="新品・中古">
-            <Input />
-          </Form.Item>
-          <Form.Item name="storehouse" label="保管場所">
-            <Input />
-          </Form.Item>
-        </Form>
+        <StockForm stock={props} form={form} />
       </Modal>
     </>
   )

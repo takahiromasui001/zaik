@@ -41,8 +41,9 @@ module Api
       end
 
       def update
-        if @stock.update(stock_params)
-          render json: @stock
+        snake_stock_params = stock_params.transform_keys { |k| k.underscore }
+        if @stock.update(snake_stock_params)
+          render json: stock_response(@stock)
         else
           render json: { status: 'ERROR' }
         end
@@ -60,7 +61,20 @@ module Api
       end
 
       def stock_params
-        params.permit(:name, :storehouse_id, :id, :file)
+        params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :used, :storehouse, :stock)
+      end
+
+      def stock_response(stock)
+        {
+          id: @stock.id,
+          name: @stock.name,
+          colorNumber: @stock.color_number,
+          manufacturingDate: @stock.manufacturing_date,
+          quantity: @stock.quantity,
+          used: @stock.used,
+          storehouse: @stock.storehouse.name,
+          file: @stock.file.present? ? Base64.encode64(@stock.file.first.download) : nil
+        }
       end
     end
   end

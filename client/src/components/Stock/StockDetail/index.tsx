@@ -4,6 +4,7 @@ import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import StockDetailFormModal from './StockDetailFormModal'
+import FileUploader from '../FileUploader'
 
 export type TStock = {
   name: string
@@ -66,7 +67,9 @@ const StockDetail = () => {
           {stock.storehouse}
         </Descriptions.Item>
       </Descriptions>
+      <div style={{ marginBottom: 20 }} />
       <StockDetailFormModal {...stock} />
+      <FileUploader id={id} stock={stock} setStock={setStock} />
     </>
   )
 }

@@ -69,7 +69,7 @@ const StockDetail = () => {
         </Descriptions.Item>
       </Descriptions>
       <div style={{ marginBottom: 20 }} />
-      <EditStockFormModal {...stock} />
+      <EditStockFormModal stock={stock} setStock={setStock} />
       <FileUploader id={stock.id} setStock={setStock} />
     </>
   )

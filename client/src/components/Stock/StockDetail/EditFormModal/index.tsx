@@ -5,9 +5,13 @@ import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../../shared/StockForm'
 
-type TEditStockFormModalProps = Partial<TStock>
+type TEditStockFormModalProps = {
+  stock: Partial<TStock>
+  setStock: React.Dispatch<React.SetStateAction<TStock>>
+}
 
 const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
+  const { stock, setStock } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
@@ -23,11 +27,10 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
         values
       )
       setVisible(false)
-      console.log(response)
+      setStock(response.data)
     })
   }
   const handleCancel = () => {
-    console.log('handleCancel')
     setVisible(false)
   }
 
@@ -40,7 +43,7 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <StockForm stock={props} form={form} />
+        <StockForm stock={stock} form={form} />
       </Modal>
     </>
   )

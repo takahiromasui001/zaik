@@ -20,7 +20,7 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
     setVisible(true)
   }
 
-  const handleOk = () => {
+  const handleSubmit = () => {
     form.validateFields().then(async (values) => {
       const response = await axios.patch(
         `http://localhost:3000/api/v1/stocks/${id}`,
@@ -28,6 +28,7 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
       )
       setVisible(false)
       setStock(response.data)
+      form.resetFields()
     })
   }
   const handleCancel = () => {
@@ -40,7 +41,7 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
       <Modal
         title="在庫情報の編集"
         visible={visible}
-        onOk={handleOk}
+        onOk={handleSubmit}
         onCancel={handleCancel}
       >
         <StockForm stock={stock} form={form} />

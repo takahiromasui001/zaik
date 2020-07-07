@@ -24,7 +24,7 @@ module Api
         stock = Stock.new(snake_stock_params)
 
         if stock.save
-          render json: stock
+          render json: stock_response(stock)
         else
           render json: { status: 'ERROR' }
         end
@@ -56,14 +56,14 @@ module Api
 
       def stock_response(stock)
         {
-          id: @stock.id,
-          name: @stock.name,
-          colorNumber: @stock.color_number,
-          manufacturingDate: @stock.manufacturing_date,
-          quantity: @stock.quantity,
-          used: @stock.used,
-          storehouse: @stock.storehouse.name,
-          file: @stock.file.present? ? Base64.encode64(@stock.file.first.download) : nil
+          id: stock.id,
+          name: stock.name,
+          colorNumber: stock.color_number,
+          manufacturingDate: stock.manufacturing_date,
+          quantity: stock.quantity,
+          used: stock.used,
+          storehouse: stock.storehouse.name,
+          file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
         }
       end
     end

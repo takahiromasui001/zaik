@@ -20,14 +20,15 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
     setVisible(true)
   }
 
-  const handleOk = () => {
+  const handleSubmit = () => {
     form.validateFields().then(async (values) => {
       const response = await axios.post(
         `http://localhost:3000/api/v1/stocks`,
         values
       )
       setVisible(false)
-      // setStocks()
+      setStocks([...stocks, response.data])
+      form.resetFields()
     })
   }
   const handleCancel = () => {
@@ -40,7 +41,7 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
       <Modal
         title="在庫情報の新規作成"
         visible={visible}
-        onOk={handleOk}
+        onOk={handleSubmit}
         onCancel={handleCancel}
       >
         <StockForm form={form} />

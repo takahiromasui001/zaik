@@ -7,6 +7,7 @@ import EditStockFormModal from './EditFormModal'
 import FileUploader from '../FileUploader'
 
 export type TStock = {
+  id: number
   name: string
   colorNumber: string
   manufacturingDate: string
@@ -69,7 +70,7 @@ const StockDetail = () => {
       </Descriptions>
       <div style={{ marginBottom: 20 }} />
       <EditStockFormModal {...stock} />
-      <FileUploader id={id} stock={stock} setStock={setStock} />
+      <FileUploader id={stock.id} setStock={setStock} />
     </>
   )
 }

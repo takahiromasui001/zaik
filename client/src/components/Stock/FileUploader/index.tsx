@@ -6,7 +6,6 @@ import { FileUploaderWrapper } from './style'
 
 type TFileUploader = {
   id: number
-  stock: TStock
   setStock: React.Dispatch<React.SetStateAction<TStock>>
 }
 

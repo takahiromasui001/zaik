@@ -11,7 +11,10 @@ export type TStock = {
   manufacturingDate: string
   quantity: number
   condition: string
-  storehouse: string
+  storehouse: {
+    id: number
+    name: string
+  }
   file: any
 }
 

@@ -63,7 +63,10 @@ module Api
           manufacturingDate: stock.manufacturing_date,
           quantity: stock.quantity,
           condition: stock.condition,
-          storehouse: stock.storehouse.name,
+          storehouse: {
+            id: stock.storehouse.id,
+            name: stock.storehouse.name
+          },
           file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
         }
       end

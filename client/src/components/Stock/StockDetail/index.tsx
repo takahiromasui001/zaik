@@ -60,7 +60,7 @@ const StockDetail = () => {
           {condition[stock.condition]}
         </Descriptions.Item>
         <Descriptions.Item label="保管場所">
-          {stock.storehouse}
+          {stock.storehouse?.name}
         </Descriptions.Item>
       </Descriptions>
       <div style={{ marginBottom: 20 }} />

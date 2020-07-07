@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
-import EditStockFormModal from './EditFormModal'
+import EditStockFormModal from './EditStockFormModal'
 import FileUploader from '../FileUploader'
 
 export type TStock = {

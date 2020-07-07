@@ -1,10 +1,10 @@
 import React from 'react'
 import { Form, Input } from 'antd'
 import { FormInstance } from 'antd/lib/form'
-import { TStock } from '..'
+import { TStock } from '../..'
 
 type TStockFormProps = {
-  stock: Partial<TStock>
+  stock?: TStock
   form: FormInstance
 }
 

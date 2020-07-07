@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
-import StockForm from '../../StockForm'
+import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
 
-type TEditStockFormModalProps = {
-  stock: Partial<TStock>
-  setStock: React.Dispatch<React.SetStateAction<TStock>>
+type TCreateStockFormModalProps = {
+  stocks: TStock[]
+  setStocks: React.Dispatch<React.SetStateAction<TStock[]>>
 }
 
-const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
-  const { stock, setStock } = props
+const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
+  const { stocks, setStocks } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
@@ -22,12 +22,12 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
 
   const handleOk = () => {
     form.validateFields().then(async (values) => {
-      const response = await axios.patch(
-        `http://localhost:3000/api/v1/stocks/${id}`,
+      const response = await axios.post(
+        `http://localhost:3000/api/v1/stocks`,
         values
       )
       setVisible(false)
-      setStock(response.data)
+      // setStocks()
     })
   }
   const handleCancel = () => {
@@ -36,17 +36,17 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
 
   return (
     <>
-      <Button onClick={showModal}>編集</Button>
+      <Button onClick={showModal}>新規作成</Button>
       <Modal
-        title="在庫情報の編集"
+        title="在庫情報の新規作成"
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <StockForm stock={stock} form={form} />
+        <StockForm form={form} />
       </Modal>
     </>
   )
 }
 
-export default EditStockFormModal
+export default CreateStockFormModal

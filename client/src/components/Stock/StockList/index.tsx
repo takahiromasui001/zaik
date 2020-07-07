@@ -4,9 +4,10 @@ import { GridContainer } from './style'
 import SearchForm from './SearchForm'
 import axios from 'axios'
 import { TStock } from '..'
+import CreateStockFormModal from './CreateStockFormModal'
 
 const StockList: React.FC = () => {
-  const [stocks, setStocks] = useState([])
+  const [stocks, setStocks] = useState([] as TStock[])
   const [searchParam, setSearchParam] = useState('')
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const StockList: React.FC = () => {
     <>
       <SearchForm setSearchParam={setSearchParam} />
       <GridContainer>{stockList}</GridContainer>
+      <CreateStockFormModal stocks={stocks} setStocks={setStocks} />
     </>
   )
 }

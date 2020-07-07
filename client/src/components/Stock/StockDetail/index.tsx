@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockFormModal from './EditStockFormModal'
-import FileUploader from '../FileUploader'
+import FileUploader from '../shared/FileUploader'
 import { TStock } from '..'
 
 const StockDetail = () => {

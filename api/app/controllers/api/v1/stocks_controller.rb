@@ -31,7 +31,8 @@ module Api
       end
 
       def create
-        stock = Stock.new(stock_params)
+        snake_stock_params = stock_params.transform_keys { |k| k.underscore }
+        stock = Stock.new(snake_stock_params)
 
         if stock.save
           render json: stock

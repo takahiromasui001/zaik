@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
-import StockForm from '../../StockForm'
+import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
 
 type TEditStockFormModalProps = {
-  stock: Partial<TStock>
+  stock: TStock
   setStock: React.Dispatch<React.SetStateAction<TStock>>
 }
 

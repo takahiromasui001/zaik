@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Button, Modal, Form } from 'antd'
+import { Modal, Form } from 'antd'
 import axios from 'axios'
 import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
+import { PlusOutlined } from '@ant-design/icons'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]
@@ -35,7 +36,7 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
 
   return (
     <>
-      <Button onClick={showModal}>新規作成</Button>
+      <PlusOutlined onClick={showModal} style={{ fontSize: '20px' }} />
       <Modal
         title="在庫情報の新規作成"
         visible={visible}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import axios from 'axios'
-import { Descriptions, Empty, Button } from 'antd'
+import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockModal from './EditStockModal'
 import FileUploader from '../shared/FileUploader'
@@ -15,7 +15,6 @@ export const condition: { [key: string]: string } = {
 
 const StockDetail = () => {
   let { id } = useParams()
-  let history = useHistory()
   const [stock, setStock] = useState({} as TStock)
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const StockDetail = () => {
     }
 
     getStock()
-  }, [])
+  }, [id])
 
   const dataURLFile = (file: any) => `data:image/png;base64,${file}`
   const img = stock.file ? (

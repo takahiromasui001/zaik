@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
-import { useParams } from 'react-router'
 import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
 
@@ -14,7 +13,6 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   const { stocks, setStocks } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
-  const { id } = useParams()
 
   const showModal = () => {
     setVisible(true)

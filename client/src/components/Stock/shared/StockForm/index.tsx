@@ -24,10 +24,6 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
       : stock
   const storehouseList: TStorehouse[] = useStorehouseList()
 
-  const storehouseOptions = storehouseList.map((storehouse: TStorehouse) => (
-    <Option value={storehouse.id}>{storehouse.name}</Option>
-  ))
-
   return (
     <Form
       form={form}

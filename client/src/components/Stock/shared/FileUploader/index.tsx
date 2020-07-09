@@ -23,7 +23,7 @@ const FileUploader: React.FC<TFileUploader> = (props) => {
     var params = new FormData()
 
     params.append('file', acceptedFiles[0])
-    const response = axios
+    axios
       .patch(`http://localhost:3000/api/v1/stocks/${id}`, params)
       .then(function (response) {
         // 成功時

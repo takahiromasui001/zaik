@@ -5,12 +5,12 @@ import { useParams } from 'react-router'
 import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
 
-type TEditStockFormModalProps = {
+type TEditStockModalProps = {
   stock: TStock
   setStock: React.Dispatch<React.SetStateAction<TStock>>
 }
 
-const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
+const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
   const { stock, setStock } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
@@ -50,4 +50,4 @@ const EditStockFormModal: React.FC<TEditStockFormModalProps> = (props) => {
   )
 }
 
-export default EditStockFormModal
+export default EditStockModal

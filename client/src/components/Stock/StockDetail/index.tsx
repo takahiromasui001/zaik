@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
-import { Descriptions, Empty } from 'antd'
+import { Descriptions, Empty, Button } from 'antd'
 import { ImgContainer } from './style'
-import EditStockFormModal from './EditStockFormModal'
+import EditStockModal from './EditStockModal'
 import FileUploader from '../shared/FileUploader'
 import { TStock } from '..'
+import DeleteStockModal from './DeleteStockModal'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',
@@ -14,6 +15,7 @@ export const condition: { [key: string]: string } = {
 
 const StockDetail = () => {
   let { id } = useParams()
+  let history = useHistory()
   const [stock, setStock] = useState({} as TStock)
 
   useEffect(() => {
@@ -64,7 +66,8 @@ const StockDetail = () => {
         </Descriptions.Item>
       </Descriptions>
       <div style={{ marginBottom: 20 }} />
-      <EditStockFormModal stock={stock} setStock={setStock} />
+      <EditStockModal stock={stock} setStock={setStock} />
+      <DeleteStockModal />
       <FileUploader id={stock.id} setStock={setStock} />
     </>
   )

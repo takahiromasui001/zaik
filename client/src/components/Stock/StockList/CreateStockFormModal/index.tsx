@@ -3,7 +3,8 @@ import { Modal, Form } from 'antd'
 import axios from 'axios'
 import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusCircleTwoTone } from '@ant-design/icons'
+import { Container } from './style'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]
@@ -35,8 +36,12 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   }
 
   return (
-    <>
-      <PlusOutlined onClick={showModal} style={{ fontSize: '20px' }} />
+    <Container>
+      <PlusCircleTwoTone
+        onClick={showModal}
+        style={{ fontSize: '30px' }}
+        twoToneColor="#BFBFBF"
+      />
       <Modal
         title="在庫情報の新規作成"
         visible={visible}
@@ -45,7 +50,7 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
       >
         <StockForm form={form} />
       </Modal>
-    </>
+    </Container>
   )
 }
 

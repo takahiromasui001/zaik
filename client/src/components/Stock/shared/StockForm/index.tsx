@@ -1,22 +1,23 @@
 import React from 'react'
 import { Form, Input, DatePicker, Select } from 'antd'
 import { FormInstance } from 'antd/lib/form'
-import { TStock, TStorehouse } from '../..'
+import { TStorehouse, RootState } from '../..'
 import moment from 'moment'
 import useStorehouseList from './useStorehouseList'
 import FileUploader from '../FileUploader'
+import { useSelector } from 'react-redux'
 
 const { Option } = Select
 
 type TStockFormProps = {
-  stock?: TStock
   form: FormInstance
   acceptedFiles?: any
   setAcceptedFiles?: any
 }
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
-  const { stock, form, acceptedFiles, setAcceptedFiles } = props
+  const { form, acceptedFiles, setAcceptedFiles } = props
+  const stock = useSelector((state: RootState) => state.stock)
   const stockForForm =
     stock !== undefined
       ? {

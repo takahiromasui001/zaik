@@ -3,19 +3,16 @@ import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../shared/StockForm'
-import { TStock } from '../..'
+import { updateStock } from '../stockSlice'
+import { useDispatch } from 'react-redux'
 
-type TEditStockModalProps = {
-  stock: TStock
-  setStock: React.Dispatch<React.SetStateAction<TStock>>
-}
-
-const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
-  const { stock, setStock } = props
+const EditStockModal = () => {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
   const [acceptedFiles, setAcceptedFiles] = useState([])
+
+  const dispatch = useDispatch()
 
   const showModal = () => {
     setVisible(true)
@@ -39,10 +36,12 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
       )
 
       if (acceptedFiles.length === 0) {
-        setStock(response.data)
+        dispatch(updateStock(response.data))
       } else {
         const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-        setStock(Object.assign(response.data, { file: uploadFile }))
+        dispatch(
+          updateStock(Object.assign(response.data, { file: uploadFile }))
+        )
       }
 
       // 後処理
@@ -65,7 +64,6 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
         onCancel={handleCancel}
       >
         <StockForm
-          stock={stock}
           form={form}
           acceptedFiles={acceptedFiles}
           setAcceptedFiles={setAcceptedFiles}

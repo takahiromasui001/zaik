@@ -15,6 +15,7 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   const { stocks, setStocks } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
+  const [acceptedFiles, setAcceptedFiles] = useState([])
 
   const showModal = () => {
     setVisible(true)
@@ -26,9 +27,20 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
         `http://localhost:3000/api/v1/stocks`,
         values
       )
-      setVisible(false)
-      setStocks([...stocks, response.data])
+      const id = response.data.id
+      let params = new FormData()
+      params.append('file', acceptedFiles[0])
+      const fileResponse = await axios.patch(
+        `http://localhost:3000/api/v1/stocks/${id}`,
+        params
+      )
+      const newStock = Object.assign(response.data, {
+        file: fileResponse.data.file,
+      })
+      setStocks([...stocks, newStock])
       form.resetFields()
+      setVisible(false)
+      setAcceptedFiles([])
     })
   }
   const handleCancel = () => {
@@ -48,7 +60,11 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
         onOk={handleSubmit}
         onCancel={handleCancel}
       >
-        <StockForm form={form} />
+        <StockForm
+          form={form}
+          acceptedFiles={acceptedFiles}
+          setAcceptedFiles={setAcceptedFiles}
+        />
       </Modal>
     </Container>
   )

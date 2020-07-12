@@ -4,7 +4,6 @@ import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockModal from './EditStockModal'
-import FileUploader from '../shared/FileUploader'
 import { TStock } from '..'
 import DeleteStockModal from './DeleteStockModal'
 
@@ -67,7 +66,6 @@ const StockDetail = () => {
       <div style={{ marginBottom: 20 }} />
       <EditStockModal stock={stock} setStock={setStock} />
       <DeleteStockModal />
-      <FileUploader id={stock.id} setStock={setStock} />
     </>
   )
 }

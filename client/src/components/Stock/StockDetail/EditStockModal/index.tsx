@@ -37,8 +37,13 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
         `http://localhost:3000/api/v1/stocks/${id}`,
         values
       )
-      const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-      setStock(Object.assign(response.data, { file: uploadFile }))
+
+      if (acceptedFiles.length === 0) {
+        setStock(response.data)
+      } else {
+        const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+        setStock(Object.assign(response.data, { file: uploadFile }))
+      }
 
       // 後処理
       form.resetFields()

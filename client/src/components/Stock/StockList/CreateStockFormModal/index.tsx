@@ -37,11 +37,17 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
         `http://localhost:3000/api/v1/stocks`,
         values
       )
-      const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-      const newStock = Object.assign(response.data, {
-        file: uploadFile,
-      })
-      setStocks([...stocks, newStock])
+      if (acceptedFiles.length === 0) {
+        setStocks([...stocks, response.data])
+      } else {
+        const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+        setStocks([
+          ...stocks,
+          Object.assign(response.data, {
+            file: uploadFile,
+          }),
+        ])
+      }
 
       // 後処理
       form.resetFields()

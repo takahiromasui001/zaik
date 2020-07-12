@@ -21,19 +21,26 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
     setVisible(true)
   }
 
+  const fileUpload = async (acceptedFiles: File[], id: number) => {
+    let params = new FormData()
+    params.append('file', acceptedFiles[0])
+    const fileResponse = await axios.patch(
+      `http://localhost:3000/api/v1/stocks/${id}`,
+      params
+    )
+    return fileResponse.data.file
+  }
+
   const handleSubmit = () => {
     form.validateFields().then(async (values) => {
       const response = await axios.patch(
         `http://localhost:3000/api/v1/stocks/${id}`,
         values
       )
-      let params = new FormData()
-      params.append('file', acceptedFiles[0])
-      const fileResponse = await axios.patch(
-        `http://localhost:3000/api/v1/stocks/${id}`,
-        params
-      )
-      setStock(Object.assign(response.data, { file: fileResponse.data.file }))
+      const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+      setStock(Object.assign(response.data, { file: uploadFile }))
+
+      // 後処理
       form.resetFields()
       setVisible(false)
       setAcceptedFiles([])

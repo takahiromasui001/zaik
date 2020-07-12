@@ -21,23 +21,29 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
     setVisible(true)
   }
 
+  const fileUpload = async (acceptedFiles: File[], id: number) => {
+    let params = new FormData()
+    params.append('file', acceptedFiles[0])
+    const fileResponse = await axios.patch(
+      `http://localhost:3000/api/v1/stocks/${id}`,
+      params
+    )
+    return fileResponse.data.file
+  }
+
   const handleSubmit = () => {
     form.validateFields().then(async (values) => {
       const response = await axios.post(
         `http://localhost:3000/api/v1/stocks`,
         values
       )
-      const id = response.data.id
-      let params = new FormData()
-      params.append('file', acceptedFiles[0])
-      const fileResponse = await axios.patch(
-        `http://localhost:3000/api/v1/stocks/${id}`,
-        params
-      )
+      const uploadFile = await fileUpload(acceptedFiles, response.data.id)
       const newStock = Object.assign(response.data, {
-        file: fileResponse.data.file,
+        file: uploadFile,
       })
       setStocks([...stocks, newStock])
+
+      // 後処理
       form.resetFields()
       setVisible(false)
       setAcceptedFiles([])

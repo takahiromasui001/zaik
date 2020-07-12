@@ -15,6 +15,7 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
+  const [acceptedFiles, setAcceptedFiles] = useState([])
 
   const showModal = () => {
     setVisible(true)
@@ -26,9 +27,16 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
         `http://localhost:3000/api/v1/stocks/${id}`,
         values
       )
-      setVisible(false)
-      setStock(response.data)
+      let params = new FormData()
+      params.append('file', acceptedFiles[0])
+      const fileResponse = await axios.patch(
+        `http://localhost:3000/api/v1/stocks/${id}`,
+        params
+      )
+      setStock(Object.assign(response.data, { file: fileResponse.data.file }))
       form.resetFields()
+      setVisible(false)
+      setAcceptedFiles([])
     })
   }
   const handleCancel = () => {
@@ -44,7 +52,12 @@ const EditStockModal: React.FC<TEditStockModalProps> = (props) => {
         onOk={handleSubmit}
         onCancel={handleCancel}
       >
-        <StockForm stock={stock} form={form} />
+        <StockForm
+          stock={stock}
+          form={form}
+          acceptedFiles={acceptedFiles}
+          setAcceptedFiles={setAcceptedFiles}
+        />
       </Modal>
     </>
   )

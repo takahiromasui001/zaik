@@ -4,16 +4,19 @@ import { FormInstance } from 'antd/lib/form'
 import { TStock, TStorehouse } from '../..'
 import moment from 'moment'
 import useStorehouseList from './useStorehouseList'
+import FileUploader from '../FileUploader'
 
 const { Option } = Select
 
 type TStockFormProps = {
   stock?: TStock
   form: FormInstance
+  acceptedFiles?: any
+  setAcceptedFiles?: any
 }
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
-  const { stock, form } = props
+  const { stock, form, acceptedFiles, setAcceptedFiles } = props
   const stockForForm =
     stock !== undefined
       ? {
@@ -56,6 +59,10 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
           ))}
         </Select>
       </Form.Item>
+      <FileUploader
+        acceptedFiles={acceptedFiles}
+        setAcceptedFiles={setAcceptedFiles}
+      />
     </Form>
   )
 }

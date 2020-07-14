@@ -1,4 +1,4 @@
 import { combineReducers } from 'redux'
-import stock from '../StockDetail/stockSlice'
+import stock from '../slices/stockSlice'
 
 export default combineReducers({ stock })

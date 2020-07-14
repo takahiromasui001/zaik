@@ -18,11 +18,11 @@ const stockSlice = createSlice({
   name: 'stock',
   initialState: {} as TStock,
   reducers: {
-    getStock(_, action: PayloadAction<TStock>) {
-      return { ...action.payload }
+    getStock(state, action: PayloadAction<TStock>) {
+      return action.payload
     },
     updateStock(state, action: PayloadAction<TStock>) {
-      state = action.payload
+      return action.payload
     },
   },
 })

@@ -7,7 +7,7 @@ import EditStockModal from './EditStockModal'
 import { RootState } from '..'
 import DeleteStockModal from './DeleteStockModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { getStock } from './stockSlice'
+import { getStock } from '../slices/stockSlice'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',
@@ -29,7 +29,7 @@ const StockDetail = () => {
     }
 
     fetchStock()
-  }, [id])
+  }, [id, dispatch])
 
   const dataURLFile = (file: any) => `data:image/png;base64,${file}`
   const img = stock.file ? (

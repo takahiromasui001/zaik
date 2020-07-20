@@ -9,28 +9,22 @@ import {
   Redirect,
 } from 'react-router-dom'
 import Login from './Authentication/Login'
+import Private from './Private'
 
 const { Content } = Layout
 
 function App() {
   return (
-    <div className="App">
+    <Layout style={{ backgroundColor: 'white' }}>
       <Content>
         <Router>
           <Switch>
-            <Route path="/stocks">
-              <Stock />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/">
-              <Redirect to="/login" />
-            </Route>
+            <Route path="/login" component={Login} />
+            <Route path="/" component={Private} />
           </Switch>
         </Router>
       </Content>
-    </div>
+    </Layout>
   )
 }
 

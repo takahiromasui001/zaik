@@ -5,6 +5,8 @@ import StockForm from '../../shared/StockForm'
 import { TStock } from '../..'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 import { Container } from './style'
+import { useDispatch } from 'react-redux'
+import { resetStock } from '../../slices/stockSlice'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]
@@ -16,8 +18,10 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const [acceptedFiles, setAcceptedFiles] = useState([])
+  const dispatch = useDispatch()
 
   const showModal = () => {
+    dispatch(resetStock({} as TStock))
     setVisible(true)
   }
 

@@ -3,7 +3,7 @@ import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../shared/StockForm'
-import { updateStock } from '../../slices/stockSlice'
+import { setStock } from '../../slices/stockSlice'
 import { useDispatch } from 'react-redux'
 
 const EditStockModal = () => {
@@ -36,12 +36,10 @@ const EditStockModal = () => {
       )
 
       if (acceptedFiles.length === 0) {
-        dispatch(updateStock(response.data))
+        dispatch(setStock(response.data))
       } else {
         const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-        dispatch(
-          updateStock(Object.assign(response.data, { file: uploadFile }))
-        )
+        dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
       }
 
       // 後処理

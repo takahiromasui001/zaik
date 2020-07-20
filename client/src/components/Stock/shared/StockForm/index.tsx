@@ -19,7 +19,7 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
   const { form, acceptedFiles, setAcceptedFiles } = props
   const stock = useSelector((state: RootState) => state.stock)
   const stockForForm =
-    stock !== undefined
+    Object.keys(stock).length !== 0
       ? {
           ...stock,
           manufacturingDate: moment(stock.manufacturingDate),

@@ -7,7 +7,7 @@ import EditStockModal from './EditStockModal'
 import { RootState } from '..'
 import DeleteStockModal from './DeleteStockModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { getStock } from '../slices/stockSlice'
+import { setStock } from '../slices/stockSlice'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',
@@ -25,7 +25,7 @@ const StockDetail = () => {
         `http://localhost:3000/api/v1/stocks/${id}`
       )
 
-      dispatch(getStock(response.data))
+      dispatch(setStock(response.data))
     }
 
     fetchStock()

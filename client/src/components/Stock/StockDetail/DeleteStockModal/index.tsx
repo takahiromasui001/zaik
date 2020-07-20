@@ -19,7 +19,7 @@ const DeleteStockModal: React.FC = (props) => {
 
   const deleteStock = async () => {
     await axios.delete(`http://localhost:3000/api/v1/stocks/${id}`)
-    history.push('/')
+    history.push('/stocks/')
   }
 
   return (

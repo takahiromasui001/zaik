@@ -31,7 +31,7 @@ const StockItem: React.FC<TStockProps> = (props) => {
   )
 
   const handleClick = () => {
-    history.push(`/${id}`)
+    history.push(`stocks/${id}`)
   }
 
   return (

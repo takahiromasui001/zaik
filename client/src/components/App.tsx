@@ -1,13 +1,7 @@
 import React from 'react'
 import 'antd/dist/antd.css'
-import Stock from './Stock'
 import { Layout } from 'antd'
-import {
-  Switch,
-  Route,
-  BrowserRouter as Router,
-  Redirect,
-} from 'react-router-dom'
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 import Login from './Authentication/Login'
 import Private from './Private'
 

@@ -2,12 +2,7 @@ import React from 'react'
 import 'antd/dist/antd.css'
 import StockList from './StockList'
 import StockDetail from './StockDetail'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useRouteMatch,
-} from 'react-router-dom'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import rootReducer from './reducers'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'

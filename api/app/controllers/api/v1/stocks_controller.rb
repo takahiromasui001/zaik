@@ -35,7 +35,6 @@ module Api
         if @stock.update(snake_stock_params)
           render json: stock_response(@stock)
         else
-          debugger
           render json: { status: 'ERROR' }
         end
       end

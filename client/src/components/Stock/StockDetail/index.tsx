@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockModal from './EditStockModal'
-import { TStock } from '..'
+import { RootState } from '..'
 import DeleteStockModal from './DeleteStockModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { setStock } from '../slices/stockSlice'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',
@@ -14,19 +16,20 @@ export const condition: { [key: string]: string } = {
 
 const StockDetail = () => {
   let { id } = useParams()
-  const [stock, setStock] = useState({} as TStock)
+  const dispatch = useDispatch()
+  const stock = useSelector((state: RootState) => state.stock)
 
   useEffect(() => {
-    const getStock = async () => {
+    const fetchStock = async () => {
       const response = await axios.get(
         `http://localhost:3000/api/v1/stocks/${id}`
       )
 
-      setStock(response.data)
+      dispatch(setStock(response.data))
     }
 
-    getStock()
-  }, [id])
+    fetchStock()
+  }, [id, dispatch])
 
   const dataURLFile = (file: any) => `data:image/png;base64,${file}`
   const img = stock.file ? (
@@ -64,7 +67,7 @@ const StockDetail = () => {
         </Descriptions.Item>
       </Descriptions>
       <div style={{ marginBottom: 20 }} />
-      <EditStockModal stock={stock} setStock={setStock} />
+      <EditStockModal />
       <DeleteStockModal />
     </>
   )

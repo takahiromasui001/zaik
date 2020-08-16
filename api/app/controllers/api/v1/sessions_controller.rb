@@ -10,7 +10,6 @@ module Api
         else
           render json: { message: 'login failed ' }, status: 401
         end
-        
       end
 
       def delete

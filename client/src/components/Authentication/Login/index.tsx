@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Input, Button } from 'antd'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios'
 
 const Login = () => {
   const history = useHistory()
@@ -11,8 +12,13 @@ const Login = () => {
     wrapperCol: { span: 16 },
   }
 
-  const onFinish = (values: any) => {
-    const nextPath = values.password === '1111aaaa' ? '/stocks' : '/login'
+  const onFinish = async (values: any) => {
+    const response = await axios.post(
+      'http://localhost:3000/api/v1/login',
+      values
+    )
+
+    const nextPath = response.status === 200 ? '/stocks' : '/login'
     if (nextPath === '/login') {
       form.resetFields()
     }
@@ -37,7 +43,7 @@ const Login = () => {
         form={form}
       >
         <Form.Item
-          name="username"
+          name="name"
           rules={[{ required: true, message: 'ユーザ名を入力してください' }]}
         >
           <Input placeholder={'ユーザ名'} />

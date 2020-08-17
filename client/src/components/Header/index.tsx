@@ -3,6 +3,7 @@ import { HeaderContainer, Title } from './style'
 import { UnorderedListOutlined } from '@ant-design/icons'
 import { Dropdown, Menu } from 'antd'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios'
 
 const Header: React.FC = () => {
   const history = useHistory()
@@ -11,8 +12,9 @@ const Header: React.FC = () => {
     console.log('click left button')
   }
 
-  const handleMenuClick = (e: any) => {
+  const handleMenuClick = async (e: any) => {
     if (e.key === '2') {
+      await axios.delete('http://localhost:3000/api/v1/logout')
       history.push('/login')
     }
   }

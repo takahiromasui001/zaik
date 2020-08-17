@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './components/App'
+import App from './App'
 import * as serviceWorker from './serviceWorker'
-import { initialAxiosDefaultSetting } from './utils/libraryInitializer'
+import { initialAxiosDefaultSetting } from './common/utils/libraryInitializer'
 
 ReactDOM.render(
   <React.StrictMode>

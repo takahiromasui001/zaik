@@ -2,8 +2,8 @@ import React from 'react'
 import 'antd/dist/antd.css'
 import { Layout } from 'antd'
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
-import Login from './Authentication/Login'
-import Private from './Private'
+import Login from './domains/Login'
+import Private from './layouts/Private'
 
 const { Content } = Layout
 

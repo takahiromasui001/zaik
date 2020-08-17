@@ -4,6 +4,10 @@ Rails.application.routes.draw do
     namespace 'v1' do
       resources :stocks
       resources :storehouses, only: [:index]
+
+      post '/login', to: 'sessions#create'
+      delete '/logout', to: 'sessions#delete'
+      get '/logged_in', to: 'sessions#show'
     end
   end
 end

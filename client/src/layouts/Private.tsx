@@ -1,6 +1,6 @@
 import React from 'react'
 import 'antd/dist/antd.css'
-import Stock from './Stock'
+import Stock from '../domains/Stock'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import Header from './Header'
 

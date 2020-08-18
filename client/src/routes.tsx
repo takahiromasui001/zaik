@@ -8,15 +8,19 @@ import StockList from './domains/Stock/StockList'
 
 export const rootPath = [
   { path: '/login', element: <Login /> },
-  { path: '/*', element: <Private /> },
-]
-
-export const privatePath = [
-  { path: 'stocks/*', element: <Stock /> },
-  { path: '/', element: <Navigate to="/login" /> },
-]
-
-export const stockPath = [
-  { path: '/:id', element: <StockDetail /> },
-  { path: '/', element: <StockList /> },
+  {
+    path: '/*',
+    element: <Private />,
+    children: [
+      {
+        path: 'stocks/*',
+        element: <Stock />,
+        children: [
+          { path: '/:id', element: <StockDetail /> },
+          { path: '/', element: <StockList /> },
+        ],
+      },
+      { path: '/', element: <Navigate to="/login" /> },
+    ],
+  },
 ]

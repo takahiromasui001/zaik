@@ -1,17 +1,15 @@
 import React from 'react'
 import 'antd/dist/antd.css'
-import Stock from '../domains/Stock'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { useRoutes } from 'react-router-dom'
 import Header from './Header'
+import { privatePath } from '../routes'
 
 const Private: React.FC = () => {
+  const element = useRoutes(privatePath)
   return (
     <>
       <Header />
-      <Routes>
-        <Route path="stocks/*" element={<Stock />} />
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
+      {element}
     </>
   )
 }

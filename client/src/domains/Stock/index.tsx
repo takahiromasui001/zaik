@@ -1,11 +1,10 @@
 import React from 'react'
 import 'antd/dist/antd.css'
-import StockList from './StockList'
-import StockDetail from './StockDetail'
-import { Routes, Route } from 'react-router-dom'
+import { useRoutes } from 'react-router-dom'
 import rootReducer from './reducers'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
+import { stockPath } from '../../routes'
 
 export type TStock = {
   id: number
@@ -31,14 +30,8 @@ const store = configureStore({ reducer: rootReducer })
 export type RootState = ReturnType<typeof store.getState>
 
 const Stock = () => {
-  return (
-    <Provider store={store}>
-      <Routes>
-        <Route path={'/:id'} element={<StockDetail />} />
-        <Route path={'/'} element={<StockList />} />
-      </Routes>
-    </Provider>
-  )
+  const element = useRoutes(stockPath)
+  return <Provider store={store}>{element}</Provider>
 }
 
 export default Stock

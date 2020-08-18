@@ -1,23 +1,17 @@
 import React from 'react'
 import 'antd/dist/antd.css'
 import { Layout } from 'antd'
-import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
-import Login from './domains/Login'
-import Private from './layouts/Private'
+import { useRoutes } from 'react-router-dom'
+import { rootPath } from './routes'
 
 const { Content } = Layout
 
 function App() {
+  const element = useRoutes(rootPath)
+
   return (
     <Layout style={{ backgroundColor: 'white' }}>
-      <Content>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/*" element={<Private />} />
-          </Routes>
-        </Router>
-      </Content>
+      <Content>{element}</Content>
     </Layout>
   )
 }

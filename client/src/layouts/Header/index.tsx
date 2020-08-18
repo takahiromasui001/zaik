@@ -2,11 +2,11 @@ import React from 'react'
 import { HeaderContainer, Title } from './style'
 import { UnorderedListOutlined } from '@ant-design/icons'
 import { Dropdown, Menu } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const Header: React.FC = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   function handleButtonClick(e: any) {
     console.log('click left button')
@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   const handleMenuClick = async (e: any) => {
     if (e.key === '2') {
       await axios.delete('http://localhost:3000/api/v1/logout')
-      history.push('/login')
+      navigate('/login')
     }
   }
 
@@ -28,7 +28,7 @@ const Header: React.FC = () => {
 
   return (
     <HeaderContainer>
-      <Title onClick={() => history.push('/stocks')}>在庫管理システム</Title>
+      <Title onClick={() => navigate('/stocks')}>在庫管理システム</Title>
       <Dropdown.Button
         overlay={menu}
         onClick={handleButtonClick}

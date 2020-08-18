@@ -1,10 +1,10 @@
 import React from 'react'
 import { Form, Input, Button } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const Login = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const [form] = Form.useForm()
 
   const layout = {
@@ -22,7 +22,7 @@ const Login = () => {
     if (nextPath === '/login') {
       form.resetFields()
     }
-    history.push(nextPath)
+    navigate(nextPath)
   }
 
   const onFinishFailed = (errorInfo: any) => {

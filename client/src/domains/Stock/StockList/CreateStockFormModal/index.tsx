@@ -6,7 +6,7 @@ import { TStock } from '../..'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 import { Container } from './style'
 import { useDispatch } from 'react-redux'
-import { resetStock } from '../../slices/stockSlice'
+import { resetStock } from '../../stockSlice'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]

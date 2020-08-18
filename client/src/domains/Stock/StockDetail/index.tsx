@@ -4,10 +4,10 @@ import axios from 'axios'
 import { Descriptions, Empty } from 'antd'
 import { ImgContainer } from './style'
 import EditStockModal from './EditStockModal'
-import { RootState } from '..'
 import DeleteStockModal from './DeleteStockModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { setStock } from '../slices/stockSlice'
+import { setStock } from '../stockSlice'
+import { RootState } from '../../../App'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',

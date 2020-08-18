@@ -3,7 +3,7 @@ import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../common/StockForm'
-import { setStock } from '../../slices/stockSlice'
+import { setStock } from '../../stockSlice'
 import { useDispatch } from 'react-redux'
 
 const EditStockModal = () => {

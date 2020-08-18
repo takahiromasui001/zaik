@@ -1,9 +1,6 @@
 import React from 'react'
 import 'antd/dist/antd.css'
 import { Outlet } from 'react-router-dom'
-import rootReducer from './reducers'
-import { configureStore } from '@reduxjs/toolkit'
-import { Provider } from 'react-redux'
 
 export type TStock = {
   id: number
@@ -24,16 +21,8 @@ export type TStorehouse = {
   name: string
 }
 
-const store = configureStore({ reducer: rootReducer })
-
-export type RootState = ReturnType<typeof store.getState>
-
 const Stock = () => {
-  return (
-    <Provider store={store}>
-      <Outlet />
-    </Provider>
-  )
+  return <Outlet />
 }
 
 export default Stock

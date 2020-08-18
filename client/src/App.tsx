@@ -1,7 +1,7 @@
 import React from 'react'
 import 'antd/dist/antd.css'
 import { Layout } from 'antd'
-import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
+import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
 import Login from './domains/Login'
 import Private from './layouts/Private'
 
@@ -12,10 +12,10 @@ function App() {
     <Layout style={{ backgroundColor: 'white' }}>
       <Content>
         <Router>
-          <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/" component={Private} />
-          </Switch>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<Private />} />
+          </Routes>
         </Router>
       </Content>
     </Layout>

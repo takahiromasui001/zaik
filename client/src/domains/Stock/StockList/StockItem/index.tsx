@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, Empty } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const { Meta } = Card
 
@@ -13,7 +13,7 @@ type TStockProps = {
 const StockItem: React.FC<TStockProps> = (props) => {
   const { id, name, file } = props
   const dataURLFile = `data:image/png;base64,${file}`
-  let history = useHistory()
+  let navigate = useNavigate()
 
   const img = file ? (
     <img
@@ -31,7 +31,7 @@ const StockItem: React.FC<TStockProps> = (props) => {
   )
 
   const handleClick = () => {
-    history.push(`stocks/${id}`)
+    navigate(`${id}`)
   }
 
   return (

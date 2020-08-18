@@ -2,7 +2,7 @@ import React from 'react'
 import 'antd/dist/antd.css'
 import StockList from './StockList'
 import StockDetail from './StockDetail'
-import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import rootReducer from './reducers'
 import { configureStore } from '@reduxjs/toolkit'
 import { Provider } from 'react-redux'
@@ -31,18 +31,12 @@ const store = configureStore({ reducer: rootReducer })
 export type RootState = ReturnType<typeof store.getState>
 
 const Stock = () => {
-  let match = useRouteMatch()
-
   return (
     <Provider store={store}>
-      <Switch>
-        <Route path={`${match.path}/:id`}>
-          <StockDetail />
-        </Route>
-        <Route path={`${match.path}`}>
-          <StockList />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path={'/:id'} element={<StockDetail />} />
+        <Route path={'/'} element={<StockList />} />
+      </Routes>
     </Provider>
   )
 }

@@ -20,7 +20,7 @@ export const rootPath = [
           { path: '/', element: <StockList /> },
         ],
       },
-      { path: '/', element: <Navigate to="/login" /> },
+      { path: '/', element: <Navigate to="/stocks" /> },
     ],
   },
 ]

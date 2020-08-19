@@ -7,7 +7,7 @@ import EditStockModal from './EditStockModal'
 import DeleteStockModal from './DeleteStockModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { setStock } from '../stockSlice'
-import { RootState } from '../../../App'
+import { RootState } from '../../..'
 
 export const condition: { [key: string]: string } = {
   unused: '新品',

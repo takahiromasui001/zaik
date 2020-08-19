@@ -6,7 +6,7 @@ import moment from 'moment'
 import useStorehouseList from './useStorehouseList'
 import FileUploader from '../FileUploader'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../../../App'
+import { RootState } from '../../../..'
 
 const { Option } = Select
 

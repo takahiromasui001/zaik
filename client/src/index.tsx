@@ -4,11 +4,20 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { initialAxiosDefaultSetting } from './common/utils/libraryInitializer'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
+import rootReducer from './reducers'
+
+const store = configureStore({ reducer: rootReducer })
+
+export type RootState = ReturnType<typeof store.getState>
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

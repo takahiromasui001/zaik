@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Modal, Form } from 'antd'
 import axios from 'axios'
-import StockForm from '../../shared/StockForm'
+import StockForm from '../../common/StockForm'
 import { TStock } from '../..'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 import { Container } from './style'
 import { useDispatch } from 'react-redux'
-import { resetStock } from '../../slices/stockSlice'
+import { resetStock } from '../../stockSlice'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]

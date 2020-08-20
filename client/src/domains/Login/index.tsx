@@ -23,6 +23,8 @@ const Login = () => {
       form.resetFields()
     }
     navigate(nextPath)
+    axios.defaults.headers.common['x-csrf-token'] =
+      response.headers['x-csrf-token']
   }
 
   const onFinishFailed = (errorInfo: any) => {

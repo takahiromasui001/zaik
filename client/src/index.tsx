@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import { initialAxiosDefaultSetting } from './common/utils/libraryInitializer'
+import { applyAxiosDefaultSetting } from './common/utils/axiosSettings'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -29,4 +29,4 @@ ReactDOM.render(
 serviceWorker.unregister()
 
 // Axiosのdefault設定を適用
-initialAxiosDefaultSetting()
+applyAxiosDefaultSetting()

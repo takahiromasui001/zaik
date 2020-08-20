@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Input, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { setAxiosCsrfToken } from '../../common/utils/axiosSettings'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -23,8 +24,7 @@ const Login = () => {
       form.resetFields()
     }
     navigate(nextPath)
-    axios.defaults.headers.common['x-csrf-token'] =
-      response.headers['x-csrf-token']
+    setAxiosCsrfToken(response.headers['x-csrf-token'])
   }
 
   const onFinishFailed = (errorInfo: any) => {

@@ -14,17 +14,17 @@ const Login = () => {
   }
 
   const onFinish = async (values: any) => {
-    const response = await axios.post(
-      'http://localhost:3000/api/v1/login',
-      values
-    )
+    const response = await axios
+      .post('http://localhost:3000/api/v1/login', values)
+      .catch((response) => response)
 
-    const nextPath = response.status === 200 ? '/stocks' : '/login'
-    if (nextPath === '/login') {
+    if (response.status === 200) {
+      navigate('/stocks')
+      setAxiosCsrfToken(response.headers['x-csrf-token'])
+    } else {
+      navigate('/login')
       form.resetFields()
     }
-    navigate(nextPath)
-    setAxiosCsrfToken(response.headers['x-csrf-token'])
   }
 
   const onFinishFailed = (errorInfo: any) => {

@@ -14,7 +14,7 @@ const Header: React.FC = () => {
 
   const handleMenuClick = async (e: any) => {
     if (e.key === '2') {
-      await axios.delete('http://localhost:3000/api/v1/logout')
+      await axios.delete('http://localhost:3000/api/v1/logout').catch()
       navigate('/login')
     }
   }

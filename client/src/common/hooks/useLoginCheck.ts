@@ -16,16 +16,15 @@ export const useLoginCheck = () => {
         const response = await axios
           .get('http://localhost:3000/api/v1/logged_in')
           .catch((response) => response)
-        if (response.status !== 200) {
-          navigate('/login')
-        } else {
-          setAxiosCsrfToken(response.headers['x-csrf-token'])
-        }
+
+        response.status === 200
+          ? setAxiosCsrfToken(response.headers['x-csrf-token'])
+          : navigate('/login')
       }
 
       dispatch(finishLoginCheck())
     }
 
     fetchApi()
-  }, [dispatch, navigate])
+  }, [dispatch, navigate, location])
 }

@@ -5,7 +5,6 @@ module Api
       def index
         stocks = Stock.with_attached_file.where('name like ?',  "%#{params[:search]}%")
         result = stocks.map do |stock|
-          id = stock.id
           {
             id: stock.id,
             name: stock.name,

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { disableLoginCheck } from '../../domains/Login/authSlice'
 import { setAxiosCsrfToken } from '../utils/axiosSettings'
 
-export const useLoginCheck = (loginChecked: boolean) => {
+export const useLoginCheck = (loginCheck: boolean) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -22,8 +22,8 @@ export const useLoginCheck = (loginChecked: boolean) => {
       dispatch(disableLoginCheck())
     }
 
-    if (!loginChecked) {
+    if (loginCheck) {
       fetchApi()
     }
-  }, [dispatch, navigate, loginChecked])
+  }, [dispatch, navigate, loginCheck])
 }

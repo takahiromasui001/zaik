@@ -7,16 +7,16 @@ import { useSelector } from 'react-redux'
 import { RootState } from '..'
 
 const Private: React.FC = () => {
-  const { loginChecked } = useSelector((state: RootState) => state.auth)
-  useLoginCheck(loginChecked)
+  const { loginCheck } = useSelector((state: RootState) => state.auth)
+  useLoginCheck(loginCheck)
 
-  return loginChecked ? (
+  return loginCheck ? (
+    <div>loading...</div>
+  ) : (
     <>
       <Header />
       <Outlet />
     </>
-  ) : (
-    <div>loading...</div>
   )
 }
 

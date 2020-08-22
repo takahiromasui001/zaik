@@ -3,10 +3,16 @@ import { Form, Input, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { setAxiosCsrfToken } from '../../common/utils/axiosSettings'
+import { receiveLoginError, resetLoginError } from './authSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../..'
+import { Error } from './style'
 
 const Login = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const { error } = useSelector((state: RootState) => state.auth)
 
   const layout = {
     labelCol: { span: 8 },
@@ -16,12 +22,14 @@ const Login = () => {
   const onFinish = async (values: any) => {
     const response = await axios
       .post('http://localhost:3000/api/v1/login', values)
-      .catch((response) => response)
+      .catch((error) => error.response)
 
     if (response.status === 200) {
+      dispatch(resetLoginError())
       navigate('/stocks')
       setAxiosCsrfToken(response.headers['x-csrf-token'])
     } else {
+      dispatch(receiveLoginError(response.data.message))
       navigate('/login')
       form.resetFields()
     }
@@ -44,6 +52,7 @@ const Login = () => {
         onFinishFailed={onFinishFailed}
         form={form}
       >
+        <Error>{error}</Error>
         <Form.Item
           name="name"
           rules={[{ required: true, message: 'ユーザ名を入力してください' }]}

@@ -12,7 +12,7 @@ module Api
           session[:user_id] = user.id
           render json: { message: 'login succeed' }
         else
-          render json: { message: 'login failed' }, status: 401
+          render json: { message: 'ユーザ名またはパスワードに誤りがあります。' }, status: 401
         end
       end
 

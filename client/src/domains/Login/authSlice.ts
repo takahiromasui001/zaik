@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const initialAuthState = {
   loginCheck: true,
+  error: '',
 }
 
 const authSlice = createSlice({
@@ -11,9 +12,19 @@ const authSlice = createSlice({
     disableLoginCheck(state) {
       state.loginCheck = false
     },
+    receiveLoginError(state, action: PayloadAction<string>) {
+      state.error = action.payload
+    },
+    resetLoginError(state) {
+      state.error = ''
+    },
   },
 })
 
-export const { disableLoginCheck } = authSlice.actions
+export const {
+  disableLoginCheck,
+  receiveLoginError,
+  resetLoginError,
+} = authSlice.actions
 
 export default authSlice.reducer

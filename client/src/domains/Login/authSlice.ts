@@ -8,12 +8,12 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
   reducers: {
-    finishLoginCheck(state) {
+    disableLoginCheck(state) {
       state.loginChecked = true
     },
   },
 })
 
-export const { finishLoginCheck } = authSlice.actions
+export const { disableLoginCheck } = authSlice.actions
 
 export default authSlice.reducer

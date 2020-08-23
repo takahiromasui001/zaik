@@ -5,9 +5,12 @@ import { Dropdown, Menu } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { ClickParam } from 'antd/lib/menu'
+import { useDispatch } from 'react-redux'
+import { enableLoginCheck } from '../../domains/Login/authSlice'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   function handleButtonClick() {
     console.log('click left button')
@@ -17,6 +20,7 @@ const Header: React.FC = () => {
     if (e.key === '2') {
       await axios.delete('http://localhost:3000/api/v1/logout').catch()
       navigate('/login')
+      dispatch(enableLoginCheck())
     }
   }
 

@@ -9,6 +9,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
   reducers: {
+    enableLoginCheck(state) {
+      state.loginCheck = true
+    },
     disableLoginCheck(state) {
       state.loginCheck = false
     },
@@ -25,6 +28,7 @@ export const {
   disableLoginCheck,
   receiveLoginError,
   resetLoginError,
+  enableLoginCheck,
 } = authSlice.actions
 
 export default authSlice.reducer

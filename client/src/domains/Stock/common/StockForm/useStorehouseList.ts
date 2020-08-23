@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const useStorehouseList = () => {
+type TStoreHouseList = { id: number; name: string }[]
+
+const useStorehouseList = (): TStoreHouseList => {
   const [storehouseList, setStorehouseList] = useState([])
 
   useEffect(() => {

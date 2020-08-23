@@ -6,7 +6,7 @@ import { disableLoginCheck } from '../../domains/Login/authSlice'
 import { setAxiosCsrfToken } from '../utils/axiosSettings'
 import { Modal } from 'antd'
 
-export const useLoginCheck = (loginCheck: boolean) => {
+export const useLoginCheck = (loginCheck: boolean): void => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 

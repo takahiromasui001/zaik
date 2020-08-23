@@ -4,10 +4,10 @@ import axios from 'axios'
 import { useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 
-const DeleteStockModal: React.FC = (props) => {
+const DeleteStockModal: React.FC = () => {
   const [visible, setVisible] = useState(false)
   const { id } = useParams()
-  let navigate = useNavigate()
+  const navigate = useNavigate()
 
   const showModal = () => {
     setVisible(true)

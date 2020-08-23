@@ -4,15 +4,16 @@ import { UnorderedListOutlined } from '@ant-design/icons'
 import { Dropdown, Menu } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { ClickParam } from 'antd/lib/menu'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
 
-  function handleButtonClick(e: any) {
+  function handleButtonClick() {
     console.log('click left button')
   }
 
-  const handleMenuClick = async (e: any) => {
+  const handleMenuClick = async (e: ClickParam) => {
     if (e.key === '2') {
       await axios.delete('http://localhost:3000/api/v1/logout').catch()
       navigate('/login')

@@ -14,8 +14,8 @@ export const condition: { [key: string]: string } = {
   used: '中古',
 }
 
-const StockDetail = () => {
-  let { id } = useParams()
+const StockDetail = (): React.ReactElement => {
+  const { id } = useParams()
   const dispatch = useDispatch()
   const stock = useSelector((state: RootState) => state.stock)
 
@@ -31,7 +31,7 @@ const StockDetail = () => {
     fetchStock()
   }, [id, dispatch])
 
-  const dataURLFile = (file: any) => `data:image/png;base64,${file}`
+  const dataURLFile = (file: string) => `data:image/png;base64,${file}`
   const img = stock.file ? (
     <img
       src={dataURLFile(stock.file)}

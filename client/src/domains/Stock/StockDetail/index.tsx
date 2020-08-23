@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Descriptions, Empty } from 'antd'
+import { Descriptions, Empty, Modal } from 'antd'
 import { ImgContainer } from './style'
 import EditStockModal from './EditStockModal'
 import DeleteStockModal from './DeleteStockModal'
@@ -17,6 +17,7 @@ export const condition: { [key: string]: string } = {
 const StockDetail = (): React.ReactElement => {
   const { id } = useParams()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const stock = useSelector((state: RootState) => state.stock)
 
   useEffect(() => {
@@ -28,7 +29,12 @@ const StockDetail = (): React.ReactElement => {
       dispatch(setStock(response.data))
     }
 
-    fetchStock()
+    fetchStock().catch(() => {
+      Modal.error({
+        content: `無効なリクエストです`,
+      })
+      navigate('/stocks')
+    })
   }, [id, dispatch])
 
   const dataURLFile = (file: string) => `data:image/png;base64,${file}`

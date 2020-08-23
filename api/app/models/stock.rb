@@ -24,5 +24,7 @@ class Stock < ApplicationRecord
   belongs_to :storehouse
   has_many_attached :file
 
+  validates :name, uniqueness: true
+
   enum condition: { unused: 0, used: 1 }
 end

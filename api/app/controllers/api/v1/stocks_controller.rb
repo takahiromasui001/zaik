@@ -25,7 +25,7 @@ module Api
         if stock.save
           render json: stock_response(stock)
         else
-          render json: { status: 'ERROR' }
+          record_invalid_error
         end
       end
 
@@ -34,7 +34,7 @@ module Api
         if @stock.update(snake_stock_params)
           render json: stock_response(@stock)
         else
-          render json: { status: 'ERROR' }
+          record_invalid_error
         end
       end
 

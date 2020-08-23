@@ -31,7 +31,7 @@ module Api
 
       def update
         snake_stock_params = stock_params.transform_keys { |k| k.underscore }
-        if @stock.update!(snake_stock_params)
+        if @stock.update(snake_stock_params)
           render json: stock_response(@stock)
         else
           record_invalid_error(@stock)

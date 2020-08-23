@@ -20,20 +20,22 @@ const Login = (): React.ReactElement => {
     wrapperCol: { span: 16 },
   }
 
-  const onFinish = async (values: Store) => {
-    const response = await axios
-      .post('http://localhost:3000/api/v1/login', values)
-      .catch((error) => error.response)
-
-    if (response.status === 200) {
+  const onFinish = (values: Store) => {
+    const login = async () => {
+      const response = await axios.post(
+        'http://localhost:3000/api/v1/login',
+        values
+      )
       dispatch(resetLoginError())
       navigate('/stocks')
       setAxiosCsrfToken(response.headers['x-csrf-token'])
-    } else {
-      dispatch(receiveLoginError(response.data.message))
+    }
+
+    login().catch((error) => {
+      dispatch(receiveLoginError(error.response.data.message))
       navigate('/login')
       form.resetFields()
-    }
+    })
   }
 
   return (

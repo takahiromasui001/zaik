@@ -29,23 +29,27 @@ const EditStockModal = (): React.ReactElement => {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(async (values) => {
-      const response = await axios.patch(
-        `http://localhost:3000/api/v1/stocks/${id}`,
-        values
-      )
+    form.validateFields().then((values) => {
+      const fetchApi = async () => {
+        const response = await axios.patch(
+          `http://localhost:3000/api/v1/stocks/${id}`,
+          values
+        )
 
-      if (acceptedFiles.length === 0) {
-        dispatch(setStock(response.data))
-      } else {
-        const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-        dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
+        if (acceptedFiles.length === 0) {
+          dispatch(setStock(response.data))
+        } else {
+          const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+          dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
+        }
+
+        // 後処理
+        form.resetFields()
+        setVisible(false)
+        setAcceptedFiles([])
       }
 
-      // 後処理
-      form.resetFields()
-      setVisible(false)
-      setAcceptedFiles([])
+      fetchApi()
     })
   }
   const handleCancel = () => {

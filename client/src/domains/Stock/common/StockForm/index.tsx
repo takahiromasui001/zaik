@@ -18,7 +18,7 @@ type TStockFormProps = {
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
   const { form, acceptedFiles, setAcceptedFiles } = props
-  const stock = useSelector((state: RootState) => state.stock)
+  const stock = useSelector((state: RootState) => state.stock.stockDetail)
   const buildStockForEdit = (stockForEdit: TStock) => {
     return {
       ...stockForEdit,

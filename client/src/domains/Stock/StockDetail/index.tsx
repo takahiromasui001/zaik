@@ -18,7 +18,7 @@ const StockDetail = (): React.ReactElement => {
   const { id } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const stock = useSelector((state: RootState) => state.stock)
+  const stock = useSelector((state: RootState) => state.stock.stockDetail)
 
   useEffect(() => {
     const fetchStock = async () => {
@@ -35,7 +35,7 @@ const StockDetail = (): React.ReactElement => {
       })
       navigate('/stocks')
     })
-  }, [id, dispatch])
+  }, [id, dispatch, navigate])
 
   const dataURLFile = (file: string) => `data:image/png;base64,${file}`
   const img = stock.file ? (

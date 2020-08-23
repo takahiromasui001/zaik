@@ -22,7 +22,7 @@ class ApplicationController < ActionController::API
     render json: { message: 'record not found' }, status: 404
   end
 
-  def record_invalid_error
+  def record_invalid_error(stock)
     render json: { message: stock.errors.full_messages }, status: :unprocessable_entity
   end
 end

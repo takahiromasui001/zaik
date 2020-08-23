@@ -3,7 +3,7 @@ import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../common/StockForm'
-import { setStock } from '../../stockSlice'
+import { setStock, setStockErrors, resetStockErrors } from '../../stockSlice'
 import { useDispatch } from 'react-redux'
 
 const EditStockModal = (): React.ReactElement => {
@@ -42,6 +42,7 @@ const EditStockModal = (): React.ReactElement => {
           const uploadFile = await fileUpload(acceptedFiles, response.data.id)
           dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
         }
+        dispatch(resetStockErrors())
 
         // 後処理
         form.resetFields()
@@ -49,10 +50,13 @@ const EditStockModal = (): React.ReactElement => {
         setAcceptedFiles([])
       }
 
-      fetchApi()
+      fetchApi().catch((error) => {
+        dispatch(setStockErrors(error.response.data.message))
+      })
     })
   }
   const handleCancel = () => {
+    dispatch(resetStockErrors())
     setVisible(false)
   }
 

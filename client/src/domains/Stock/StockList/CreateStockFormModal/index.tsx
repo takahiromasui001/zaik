@@ -6,7 +6,7 @@ import { TStock } from '../..'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 import { Container } from './style'
 import { useDispatch } from 'react-redux'
-import { resetStock } from '../../stockSlice'
+import { resetStock, setStockErrors, resetStockErrors } from '../../stockSlice'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]
@@ -53,6 +53,7 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
             }),
           ])
         }
+        dispatch(resetStockErrors())
 
         // 後処理
         form.resetFields()
@@ -60,10 +61,13 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
         setAcceptedFiles([])
       }
 
-      fetchApi()
+      fetchApi().catch((error) => {
+        dispatch(setStockErrors(error.response.data.message))
+      })
     })
   }
   const handleCancel = () => {
+    dispatch(resetStockErrors())
     setVisible(false)
   }
 

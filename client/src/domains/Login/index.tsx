@@ -7,8 +7,9 @@ import { receiveLoginError, resetLoginError } from './authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../..'
 import { Error } from './style'
+import { Store } from 'antd/lib/form/interface'
 
-const Login = () => {
+const Login = (): React.ReactElement => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const dispatch = useDispatch()
@@ -19,7 +20,7 @@ const Login = () => {
     wrapperCol: { span: 16 },
   }
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: Store) => {
     const response = await axios
       .post('http://localhost:3000/api/v1/login', values)
       .catch((error) => error.response)
@@ -35,10 +36,6 @@ const Login = () => {
     }
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
-
   return (
     <div style={{ padding: 24 }}>
       <h2 style={{ textAlign: 'center', marginBottom: 20 }}>
@@ -49,7 +46,6 @@ const Login = () => {
         name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         form={form}
       >
         <Error>{error}</Error>

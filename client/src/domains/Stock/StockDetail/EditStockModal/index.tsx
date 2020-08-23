@@ -6,11 +6,11 @@ import StockForm from '../../common/StockForm'
 import { setStock } from '../../stockSlice'
 import { useDispatch } from 'react-redux'
 
-const EditStockModal = () => {
+const EditStockModal = (): React.ReactElement => {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
   const { id } = useParams()
-  const [acceptedFiles, setAcceptedFiles] = useState([])
+  const [acceptedFiles, setAcceptedFiles] = useState([] as File[])
 
   const dispatch = useDispatch()
 
@@ -19,7 +19,7 @@ const EditStockModal = () => {
   }
 
   const fileUpload = async (acceptedFiles: File[], id: number) => {
-    let params = new FormData()
+    const params = new FormData()
     params.append('file', acceptedFiles[0])
     const fileResponse = await axios.patch(
       `http://localhost:3000/api/v1/stocks/${id}`,

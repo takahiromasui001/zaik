@@ -17,16 +17,16 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   const { stocks, setStocks } = props
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
-  const [acceptedFiles, setAcceptedFiles] = useState([])
+  const [acceptedFiles, setAcceptedFiles] = useState([] as File[])
   const dispatch = useDispatch()
 
   const showModal = () => {
-    dispatch(resetStock({} as TStock))
+    dispatch(resetStock())
     setVisible(true)
   }
 
   const fileUpload = async (acceptedFiles: File[], id: number) => {
-    let params = new FormData()
+    const params = new FormData()
     params.append('file', acceptedFiles[0])
     const fileResponse = await axios.patch(
       `http://localhost:3000/api/v1/stocks/${id}`,

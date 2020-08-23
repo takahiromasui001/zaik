@@ -1,7 +1,7 @@
 import React from 'react'
 import { Form, Input, DatePicker, Select } from 'antd'
 import { FormInstance } from 'antd/lib/form'
-import { TStorehouse } from '../..'
+import { TStorehouse, TStock } from '../..'
 import moment from 'moment'
 import useStorehouseList from './useStorehouseList'
 import FileUploader from '../FileUploader'
@@ -12,21 +12,22 @@ const { Option } = Select
 
 type TStockFormProps = {
   form: FormInstance
-  acceptedFiles?: any
-  setAcceptedFiles?: any
+  acceptedFiles?: File[]
+  setAcceptedFiles?: React.Dispatch<React.SetStateAction<File[]>>
 }
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
   const { form, acceptedFiles, setAcceptedFiles } = props
   const stock = useSelector((state: RootState) => state.stock)
+  const buildStockForEdit = (stockForEdit: TStock) => {
+    return {
+      ...stockForEdit,
+      manufacturingDate: moment(stockForEdit.manufacturingDate),
+      storehouse_id: stockForEdit.storehouse.id,
+    }
+  }
   const stockForForm =
-    Object.keys(stock).length !== 0
-      ? {
-          ...stock,
-          manufacturingDate: moment(stock.manufacturingDate),
-          storehouse_id: stock.storehouse.id,
-        }
-      : stock
+    Object.keys(stock).length !== 0 ? buildStockForEdit(stock) : stock
   const storehouseList: TStorehouse[] = useStorehouseList()
 
   return (
@@ -57,7 +58,9 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
       <Form.Item name="storehouse_id" label="保管場所">
         <Select>
           {storehouseList.map((storehouse: TStorehouse) => (
-            <Option value={storehouse.id}>{storehouse.name}</Option>
+            <Option key={storehouse.id} value={storehouse.id}>
+              {storehouse.name}
+            </Option>
           ))}
         </Select>
       </Form.Item>

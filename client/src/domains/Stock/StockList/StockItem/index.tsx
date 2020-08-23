@@ -7,13 +7,13 @@ const { Meta } = Card
 type TStockProps = {
   id: number
   name: string
-  file: any
+  file: string
 }
 
 const StockItem: React.FC<TStockProps> = (props) => {
   const { id, name, file } = props
   const dataURLFile = `data:image/png;base64,${file}`
-  let navigate = useNavigate()
+  const navigate = useNavigate()
 
   const img = file ? (
     <img

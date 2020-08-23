@@ -13,7 +13,7 @@ export type TStock = {
     id: number
     name: string
   }
-  file: any
+  file: string
 }
 
 export type TStorehouse = {
@@ -21,7 +21,7 @@ export type TStorehouse = {
   name: string
 }
 
-const Stock = () => {
+const Stock = (): React.ReactElement => {
   return <Outlet />
 }
 

@@ -6,7 +6,7 @@ import { rootPath } from './routes'
 
 const { Content } = Layout
 
-function App() {
+function App(): React.ReactElement {
   const element = useRoutes(rootPath)
 
   return (

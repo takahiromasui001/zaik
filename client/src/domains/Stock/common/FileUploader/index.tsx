@@ -3,8 +3,8 @@ import { useDropzone } from 'react-dropzone'
 import { FileUploaderWrapper } from './style'
 
 type TFileUploader = {
-  acceptedFiles?: any
-  setAcceptedFiles?: any
+  acceptedFiles?: File[]
+  setAcceptedFiles?: React.Dispatch<React.SetStateAction<File[]>>
 }
 
 const FileUploader: React.FC<TFileUploader> = (props) => {
@@ -13,7 +13,7 @@ const FileUploader: React.FC<TFileUploader> = (props) => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       // Do something with the files
-      setAcceptedFiles(acceptedFiles)
+      setAcceptedFiles && setAcceptedFiles(acceptedFiles)
     },
     [setAcceptedFiles]
   )
@@ -29,7 +29,9 @@ const FileUploader: React.FC<TFileUploader> = (props) => {
           <p>クリックして画像を添付してください</p>
         )}
       </div>
-      <div>{`ファイル名: ${acceptedFiles.map((f: any) => f.name)}`}</div>
+      <div>{`ファイル名: ${
+        acceptedFiles && acceptedFiles.map((f: File) => f.name)
+      }`}</div>
     </FileUploaderWrapper>
   )
 }

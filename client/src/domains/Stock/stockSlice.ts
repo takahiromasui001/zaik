@@ -11,7 +11,7 @@ export type TStock = {
     id: number
     name: string
   }
-  file: File
+  file: string
 }
 
 const stockInitialState = {} as TStock
@@ -23,7 +23,7 @@ const stockSlice = createSlice({
     setStock(state, action: PayloadAction<TStock>) {
       return action.payload
     },
-    resetStock(state, action: PayloadAction<TStock>) {
+    resetStock() {
       return stockInitialState
     },
   },

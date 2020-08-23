@@ -6,8 +6,8 @@ import { setAxiosCsrfToken } from '../../common/utils/axiosSettings'
 import { receiveLoginError, resetLoginError } from './authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../..'
-import { Error } from './style'
 import { Store } from 'antd/lib/form/interface'
+import { ErrorMessage } from '../../common/components/atoms/ErrorMessage'
 
 const Login = (): React.ReactElement => {
   const navigate = useNavigate()
@@ -48,7 +48,7 @@ const Login = (): React.ReactElement => {
         onFinish={onFinish}
         form={form}
       >
-        <Error>{error}</Error>
+        <ErrorMessage>{error}</ErrorMessage>
         <Form.Item
           name="name"
           rules={[{ required: true, message: 'ユーザ名を入力してください' }]}

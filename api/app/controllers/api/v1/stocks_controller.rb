@@ -1,7 +1,7 @@
 module Api
   module V1
     class StocksController < ApplicationController
-      before_action :set_stock, only: [:show, :update, :destroy, :download]
+      before_action :set_stock, only: [:show, :update, :destroy]
       def index
         stocks = Stock.with_attached_file.where('name like ?',  "%#{params[:search]}%")
         result = stocks.map do |stock|

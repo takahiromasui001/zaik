@@ -48,7 +48,7 @@ const Login = (): React.ReactElement => {
         onFinish={onFinish}
         form={form}
       >
-        <ErrorMessage>{error}</ErrorMessage>
+        <ErrorMessage message={error} />
         <Form.Item
           name="name"
           rules={[{ required: true, message: 'ユーザ名を入力してください' }]}

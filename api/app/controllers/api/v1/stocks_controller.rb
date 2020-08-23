@@ -1,7 +1,7 @@
 module Api
   module V1
     class StocksController < ApplicationController
-      before_action :set_stock, only: [:show, :update, :destroy, :download]
+      before_action :set_stock, only: [:show, :update, :destroy]
       def index
         stocks = Stock.with_attached_file.where('name like ?',  "%#{params[:search]}%")
         result = stocks.map do |stock|
@@ -25,7 +25,7 @@ module Api
         if stock.save
           render json: stock_response(stock)
         else
-          record_invalid_error
+          record_invalid_error(stock)
         end
       end
 
@@ -34,7 +34,7 @@ module Api
         if @stock.update(snake_stock_params)
           render json: stock_response(@stock)
         else
-          record_invalid_error
+          record_invalid_error(@stock)
         end
       end
 

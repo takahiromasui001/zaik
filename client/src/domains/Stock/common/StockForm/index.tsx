@@ -7,6 +7,7 @@ import useStorehouseList from './useStorehouseList'
 import FileUploader from '../FileUploader'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../..'
+import { ErrorMessages } from '../../../../common/components/atoms/ErrorMessage'
 
 const { Option } = Select
 
@@ -18,7 +19,7 @@ type TStockFormProps = {
 
 const StockForm: React.FC<TStockFormProps> = (props) => {
   const { form, acceptedFiles, setAcceptedFiles } = props
-  const stock = useSelector((state: RootState) => state.stock)
+  const { stockDetail, errors } = useSelector((state: RootState) => state.stock)
   const buildStockForEdit = (stockForEdit: TStock) => {
     return {
       ...stockForEdit,
@@ -27,48 +28,53 @@ const StockForm: React.FC<TStockFormProps> = (props) => {
     }
   }
   const stockForForm =
-    Object.keys(stock).length !== 0 ? buildStockForEdit(stock) : stock
+    Object.keys(stockDetail).length !== 0
+      ? buildStockForEdit(stockDetail)
+      : stockDetail
   const storehouseList: TStorehouse[] = useStorehouseList()
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      name="form_in_modal"
-      initialValues={{ ...stockForForm }}
-    >
-      <Form.Item name="name" label="品名">
-        <Input />
-      </Form.Item>
-      <Form.Item name="colorNumber" label="色番号">
-        <Input />
-      </Form.Item>
-      <Form.Item name="manufacturingDate" label="製造年月日">
-        <DatePicker />
-      </Form.Item>
-      <Form.Item name="quantity" label="残量">
-        <Input />
-      </Form.Item>
-      <Form.Item name="condition" label="新品・中古">
-        <Select>
-          <Option value="unused">新品</Option>
-          <Option value="used">中古</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item name="storehouse_id" label="保管場所">
-        <Select>
-          {storehouseList.map((storehouse: TStorehouse) => (
-            <Option key={storehouse.id} value={storehouse.id}>
-              {storehouse.name}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <FileUploader
-        acceptedFiles={acceptedFiles}
-        setAcceptedFiles={setAcceptedFiles}
-      />
-    </Form>
+    <>
+      <ErrorMessages messages={errors} />
+      <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+        initialValues={{ ...stockForForm }}
+      >
+        <Form.Item name="name" label="品名">
+          <Input />
+        </Form.Item>
+        <Form.Item name="colorNumber" label="色番号">
+          <Input />
+        </Form.Item>
+        <Form.Item name="manufacturingDate" label="製造年月日">
+          <DatePicker />
+        </Form.Item>
+        <Form.Item name="quantity" label="残量">
+          <Input />
+        </Form.Item>
+        <Form.Item name="condition" label="新品・中古">
+          <Select>
+            <Option value="unused">新品</Option>
+            <Option value="used">中古</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="storehouse_id" label="保管場所">
+          <Select>
+            {storehouseList.map((storehouse: TStorehouse) => (
+              <Option key={storehouse.id} value={storehouse.id}>
+                {storehouse.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <FileUploader
+          acceptedFiles={acceptedFiles}
+          setAcceptedFiles={setAcceptedFiles}
+        />
+      </Form>
+    </>
   )
 }
 

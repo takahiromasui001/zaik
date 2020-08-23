@@ -14,21 +14,35 @@ export type TStock = {
   file: string
 }
 
-const stockInitialState = {} as TStock
+const stockInitialState = {
+  stockDetail: {} as TStock,
+  errors: [] as string[],
+}
 
 const stockSlice = createSlice({
   name: 'stock',
   initialState: stockInitialState,
   reducers: {
     setStock(state, action: PayloadAction<TStock>) {
-      return action.payload
+      state.stockDetail = action.payload
     },
-    resetStock() {
-      return stockInitialState
+    resetStock(state) {
+      state.stockDetail = {} as TStock
+    },
+    setStockErrors(state, action: PayloadAction<string[]>) {
+      state.errors = action.payload
+    },
+    resetStockErrors(state) {
+      state.errors = [] as string[]
     },
   },
 })
 
-export const { setStock, resetStock } = stockSlice.actions
+export const {
+  setStock,
+  resetStock,
+  setStockErrors,
+  resetStockErrors,
+} = stockSlice.actions
 
 export default stockSlice.reducer

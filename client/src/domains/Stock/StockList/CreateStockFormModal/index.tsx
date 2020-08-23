@@ -6,7 +6,7 @@ import { TStock } from '../..'
 import { PlusCircleTwoTone } from '@ant-design/icons'
 import { Container } from './style'
 import { useDispatch } from 'react-redux'
-import { resetStock } from '../../stockSlice'
+import { resetStock, setStockErrors, resetStockErrors } from '../../stockSlice'
 
 type TCreateStockFormModalProps = {
   stocks: TStock[]
@@ -36,30 +36,38 @@ const CreateStockFormModal: React.FC<TCreateStockFormModalProps> = (props) => {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(async (values) => {
-      const response = await axios.post(
-        `http://localhost:3000/api/v1/stocks`,
-        values
-      )
-      if (acceptedFiles.length === 0) {
-        setStocks([...stocks, response.data])
-      } else {
-        const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-        setStocks([
-          ...stocks,
-          Object.assign(response.data, {
-            file: uploadFile,
-          }),
-        ])
+    form.validateFields().then((values) => {
+      const fetchApi = async () => {
+        const response = await axios.post(
+          `http://localhost:3000/api/v1/stocks`,
+          values
+        )
+        if (acceptedFiles.length === 0) {
+          setStocks([...stocks, response.data])
+        } else {
+          const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+          setStocks([
+            ...stocks,
+            Object.assign(response.data, {
+              file: uploadFile,
+            }),
+          ])
+        }
+        dispatch(resetStockErrors())
+
+        // 後処理
+        form.resetFields()
+        setVisible(false)
+        setAcceptedFiles([])
       }
 
-      // 後処理
-      form.resetFields()
-      setVisible(false)
-      setAcceptedFiles([])
+      fetchApi().catch((error) => {
+        dispatch(setStockErrors(error.response.data.message))
+      })
     })
   }
   const handleCancel = () => {
+    dispatch(resetStockErrors())
     setVisible(false)
   }
 

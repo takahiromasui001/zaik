@@ -3,7 +3,7 @@ import { Button, Modal, Form } from 'antd'
 import axios from 'axios'
 import { useParams } from 'react-router'
 import StockForm from '../../common/StockForm'
-import { setStock } from '../../stockSlice'
+import { setStock, setStockErrors, resetStockErrors } from '../../stockSlice'
 import { useDispatch } from 'react-redux'
 
 const EditStockModal = (): React.ReactElement => {
@@ -29,26 +29,34 @@ const EditStockModal = (): React.ReactElement => {
   }
 
   const handleSubmit = () => {
-    form.validateFields().then(async (values) => {
-      const response = await axios.patch(
-        `http://localhost:3000/api/v1/stocks/${id}`,
-        values
-      )
+    form.validateFields().then((values) => {
+      const fetchApi = async () => {
+        const response = await axios.patch(
+          `http://localhost:3000/api/v1/stocks/${id}`,
+          values
+        )
 
-      if (acceptedFiles.length === 0) {
-        dispatch(setStock(response.data))
-      } else {
-        const uploadFile = await fileUpload(acceptedFiles, response.data.id)
-        dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
+        if (acceptedFiles.length === 0) {
+          dispatch(setStock(response.data))
+        } else {
+          const uploadFile = await fileUpload(acceptedFiles, response.data.id)
+          dispatch(setStock(Object.assign(response.data, { file: uploadFile })))
+        }
+        dispatch(resetStockErrors())
+
+        // 後処理
+        form.resetFields()
+        setVisible(false)
+        setAcceptedFiles([])
       }
 
-      // 後処理
-      form.resetFields()
-      setVisible(false)
-      setAcceptedFiles([])
+      fetchApi().catch((error) => {
+        dispatch(setStockErrors(error.response.data.message))
+      })
     })
   }
   const handleCancel = () => {
+    dispatch(resetStockErrors())
     setVisible(false)
   }
 

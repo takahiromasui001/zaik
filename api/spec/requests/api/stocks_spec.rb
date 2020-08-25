@@ -97,6 +97,64 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context '未ログインの場合' do
     end
     context 'ログイン済みの場合' do
+      it 'HTTPステータスが200 OKであること' do
+        _, token = login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        params = {
+          name: 'stock1-a',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+
+        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+
+        expect(response.status).to eq 200
+      end
+
+      it 'HTTPステータスが422 であること' do
+        _, token = login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock2 = create(:stock, name: 'stock2', storehouse: storehouse)
+
+        params = {
+          name: 'stock2',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+
+        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+
+        expect(response.status).to eq 422
+      end
+
+      it 'HTTPステータスが404 であること' do
+        _, token = login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        params = {
+          name: 'stock1-a',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+
+        unused_stockid = Stock.ids.last + 1
+        patch api_v1_stock_path(unused_stockid), params: params, headers: { "x-csrf-token": token }
+
+        expect(response.status).to eq 404
+      end
     end
   end
 

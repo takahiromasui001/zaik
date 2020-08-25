@@ -90,6 +90,26 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context '未ログインの場合' do
     end
     context 'ログイン済みの場合' do
+      it 'HTTPステータスが200 OKであること' do
+        login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        get api_v1_stock_path(stock.id)
+
+        expect(response.status).to eq 200
+      end
+
+      it 'HTTPステータスが404 であること' do
+        login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        unused_stockid = Stock.ids.last + 1
+        get api_v1_stock_path(unused_stockid)
+
+        expect(response.status).to eq 404
+      end
     end
   end
 

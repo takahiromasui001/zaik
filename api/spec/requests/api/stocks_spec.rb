@@ -182,6 +182,30 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context '未ログインの場合' do
     end
     context 'ログイン済みの場合' do
+      it 'HTTPステータスが200 OKであること' do
+        _, token = login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        prev_stock_size = Stock.all.length
+        delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
+
+        expect(response.status).to eq 200
+        expect(prev_stock_size - Stock.all.length).to eq 1
+      end
+
+      it 'HTTPステータスが404 OKであること' do
+        _, token = login
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        prev_stock_size = Stock.all.length
+        unused_stockid = Stock.ids.last + 1
+        delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
+
+        expect(response.status).to eq 404
+        expect(prev_stock_size - Stock.all.length).to eq 0
+      end
     end
   end
 end

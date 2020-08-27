@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
-  def create_first_stock
-    storehouse = create(:storehouse)
-    stock = create(:stock, storehouse: storehouse)
-    [stock, storehouse]
-  end
-
   describe 'GET	/api/v1/stocks' do
     context '未ログインの場合' do
       it 'HTTPステータスが401であること' do

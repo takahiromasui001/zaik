@@ -153,7 +153,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
           storehouse_id: storehouse.id,
         }
 
-        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+        patch api_v1_stock_path(stock.id), params: params
       end
     end
     context 'ログイン済みの場合' do
@@ -225,7 +225,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         stock = create(:stock, name: 'stock1', storehouse: storehouse)
 
         prev_stock_size = Stock.all.length
-        delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
+        delete api_v1_stock_path(stock.id)
 
         expect(response).to have_http_status 401
       end

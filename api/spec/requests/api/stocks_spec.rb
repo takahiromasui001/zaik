@@ -10,10 +10,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
   describe 'GET	/api/v1/stocks' do
     context '未ログインの場合' do
       it 'HTTPステータスが401であること' do
-        create_first_stock
-
         get api_v1_stocks_path
-
         expect(response).to have_http_status 401
       end
     end
@@ -45,7 +42,24 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'POST /api/v1/stocks' do
     context '未ログインの場合' do
+      it 'HTTPステータスが401であること' do
+        storehouse = create(:storehouse)
+
+        params = {
+          name: 'stock1',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+
+        post api_v1_stocks_path, params: params
+
+        expect(response).to have_http_status 401
+      end
     end
+
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         _, token = login
@@ -88,7 +102,16 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'GET /api/v1/stocks/:id' do
     context '未ログインの場合' do
+      it 'HTTPステータスが401であること' do
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        get api_v1_stock_path(stock.id)
+
+        expect(response).to have_http_status 401
+      end
     end
+
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         login
@@ -115,6 +138,23 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'PATCH /api/v1/stocks/:id' do
     context '未ログインの場合' do
+      it 'HTTPステータスが401であること' do
+        storehouse = create(:storehouse)
+
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        params = {
+          name: 'stock1-a',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+
+        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+      end
     end
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
@@ -180,7 +220,17 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'DELETE /api/v1/stocks/:id' do
     context '未ログインの場合' do
+      it 'HTTPステータスが401であること' do
+        storehouse = create(:storehouse)
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+
+        prev_stock_size = Stock.all.length
+        delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
+
+        expect(response).to have_http_status 401
+      end
     end
+
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         _, token = login

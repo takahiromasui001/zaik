@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
   describe 'GET	/api/v1/stocks' do
-    context '未ログインの場合' do
+    context '未ログイン時' do
       it 'HTTPステータスが401であること' do
         get api_v1_stocks_path
         expect(response).to have_http_status 401
       end
     end
 
-    context 'ログイン済みの場合' do
+    context 'ログイン時' do
       it 'HTTPステータスが200 OKであること' do
         login
         storehouse = create(:storehouse)
@@ -55,6 +55,66 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
 
     context 'ログイン済みの場合' do
+      let!(:storehouse) { create(:storehouse) }
+      let!(:params) do
+        {
+          name: 'stock1',
+          colorNumber: '123',
+          condition: "used",
+          manufacturingDate: "2020-08-03 07:05:12",
+          quantity: 20,
+          storehouse_id: storehouse.id,
+        }
+      end
+
+      context '必要なパラメーターが全て揃っている場合' do
+        it '200 OKを返すこと' do
+          _, token = login
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          expect(response.status).to eq 200
+        end
+
+        it '正しいレスポンスを返すこと' do
+          _, token = login
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+
+          result = JSON.parse(response.body).deep_symbolize_keys
+
+          expect(result.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
+          expect(result[:storehouse].keys.sort).to eq [:id, :name]
+
+          expect(result[:name]).to eq params[:name]
+          expect(result[:colorNumber]).to eq params[:colorNumber]
+          expect(Time.zone.parse(result[:manufacturingDate])).to eq Time.zone.parse(params[:manufacturingDate])
+          expect(result[:quantity]).to eq params[:quantity]
+          expect(result[:condition]).to eq params[:condition]
+          expect(result[:storehouse][:name]).to eq storehouse.name
+          expect(result[:file]).to eq nil
+        end
+
+        it '在庫が新規に登録されていること' do
+          _, token = login
+
+          previous_stock_size = Stock.all.size
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          stock_size = Stock.all.size
+
+          expect(stock_size - previous_stock_size).to eq 1
+        end
+      end
+
+      context 'name パラメータが不足している場合' do
+        it '404 NotFoundを返すこと' do
+
+        end
+        it 'エラーメッセージを返すこと' do
+
+        end
+        it '在庫が増減しないこと' do
+
+        end
+      end
+
       it 'HTTPステータスが200 OKであること' do
         _, token = login
         storehouse = create(:storehouse)
@@ -71,6 +131,11 @@ RSpec.describe Api::V1::StocksController, type: :request do
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
 
         expect(response.status).to eq 200
+
+        registered_stock = Stock.find()
+        result = JSON.parse(response.body).symbolize_keys
+        
+        expect(result[:name]).to eq params[:name]
       end
 
       it 'HTTPステータスが422 であること' do

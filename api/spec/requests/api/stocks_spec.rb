@@ -186,24 +186,64 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
 
     context 'ログイン済みの場合' do
-      it 'HTTPステータスが200 OKであること' do
-        login
-          stock = create(:stock, :with_storehouse)
-
-        get api_v1_stock_path(stock.id)
-
-        expect(response.status).to eq 200
+      let!(:params) do
+        {
+          name: 'stock1-a',
+          color_number: '123',
+          condition: "used",
+          manufacturing_date: "2020-08-03 07:05:12",
+          quantity: 20,
+        }
       end
 
-      it 'HTTPステータスが404 であること' do
-        login
-        storehouse = create(:storehouse)
-        stock = create(:stock, :with_storehouse)
+      context '存在する在庫の取得を試みた場合' do
+        it '200 OKを返すこと' do
+          login
+          stock = create(:stock, :with_storehouse, params)
+          get api_v1_stock_path(stock.id)
+          expect(response).to have_http_status(:ok)
+        end
 
-        unused_stockid = Stock.ids.last + 1
-        get api_v1_stock_path(unused_stockid)
+        it '正しいレスポンスを返すこと' do
+          login
+          stock = create(:stock, :with_storehouse, params)
 
-        expect(response.status).to eq 404
+          get api_v1_stock_path(stock.id)
+          actual = JSON.parse(response.body).deep_symbolize_keys
+
+          expect(actual.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
+          expect(actual[:storehouse].keys.sort).to eq [:id, :name]
+
+          expect(actual[:name]).to eq stock.name
+          expect(actual[:colorNumber]).to eq stock.color_number
+          expect(Time.zone.parse(actual[:manufacturingDate])).to eq Time.zone.parse(stock.manufacturing_date.to_s)
+          expect(actual[:quantity]).to eq stock.quantity
+          expect(actual[:condition]).to eq stock.condition
+          expect(actual[:storehouse][:name]).to eq stock.storehouse.name
+          expect(actual[:file]).to eq nil
+        end
+      end
+
+      context '存在しない在庫の取得を試みた場合' do
+        it 'HTTPステータスが404 であること' do
+          login
+          create(:stock, :with_storehouse)
+          unused_stockid = Stock.ids.last + 1
+
+          get api_v1_stock_path(unused_stockid)
+
+          expect(response.status).to eq 404
+        end
+
+        it 'エラーメッセージを返すこと' do
+          login
+          create(:stock, :with_storehouse)
+          unused_stockid = Stock.ids.last + 1
+
+          get api_v1_stock_path(unused_stockid)
+
+          expect(JSON.parse(response.body)["message"]).to eq 'record not found'
+        end
       end
     end
   end

@@ -15,7 +15,7 @@ module Api
       end
 
       def show
-        render json: stock_response(@stock).to_json
+        render json: stock_response(@stock)
       end
 
       def create

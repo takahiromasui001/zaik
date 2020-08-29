@@ -35,19 +35,21 @@ RSpec.describe Api::V1::StocksController, type: :request do
   end
 
   describe 'POST /api/v1/stocks' do
+    let!(:storehouse) { create(:storehouse) }
+    let!(:params) do
+      {
+        name: 'stock1',
+        colorNumber: '123',
+        condition: "used",
+        manufacturingDate: "2020-08-03 07:05:12",
+        quantity: 20,
+        storehouse_id: storehouse.id,
+      }
+    end
+
     context '未ログインの場合' do
       it 'HTTPステータスが401であること' do
         storehouse = create(:storehouse)
-
-        params = {
-          name: 'stock1',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-
         post api_v1_stocks_path, params: params
 
         expect(response).to have_http_status 401
@@ -55,18 +57,6 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
 
     context 'ログイン済みの場合' do
-      let!(:storehouse) { create(:storehouse) }
-      let!(:params) do
-        {
-          name: 'stock1',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-      end
-
       context '必要なパラメーターが全て揃っている場合' do
         it '200 OKを返すこと' do
           _, token = login
@@ -103,11 +93,10 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
       end
 
-      context 'name パラメータが重複している場合' do
-        let!(:params_without_name) { params.reject { |key, _| key == :name } }
-
+      context 'name パラメータが既存のいずれかのstockと重複している場合' do
         it '422 Unprocessable Entityを返すこと' do
           create(:stock, name: params[:name], storehouse: storehouse)
+
           _, token = login
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
           expect(response).to have_http_status(:unprocessable_entity)
@@ -115,6 +104,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
         it 'エラーメッセージを返すこと' do
           create(:stock, name: params[:name], storehouse: storehouse)
+
           _, token = login
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
           expect(JSON.parse(response.body)["message"].first).to eq "Name has already been taken"
@@ -122,10 +112,33 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
         it '在庫が増減しないこと' do
           create(:stock, name: params[:name], storehouse: storehouse)
-          previous_stock_size = Stock.all.size
 
           _, token = login
+          prev_stock_size = Stock.all.size
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          expect(Stock.all.size - prev_stock_size).to eq 0
+        end
+      end
+
+      context 'storehouseが指定されていない場合' do
+        let!(:params_without_storehouse) { params.reject { |key, _| key == :storehouse_id } }
+
+        it '422 Unprocessable Entityを返すこと' do
+          _, token = login
+          post api_v1_stocks_path, params: params_without_storehouse, headers: { "x-csrf-token": token }
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'エラーメッセージを返すこと' do
+          _, token = login
+          post api_v1_stocks_path, params: params_without_storehouse, headers: { "x-csrf-token": token }
+          expect(JSON.parse(response.body)["message"].first).to eq "Storehouse must exist"
+        end
+
+        it '在庫が増減しないこと' do
+          _, token = login
+          prev_stock_size = Stock.all.size
+          post api_v1_stocks_path, params: params_without_storehouse, headers: { "x-csrf-token": token }
           expect(Stock.all.size - prev_stock_size).to eq 0
         end
       end

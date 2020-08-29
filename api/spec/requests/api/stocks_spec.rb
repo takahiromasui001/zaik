@@ -384,6 +384,15 @@ RSpec.describe Api::V1::StocksController, type: :request do
           expect(JSON.parse(response.body)["message"]).to eq 'record not found'
         end
       end
+
+      context 'リクエストにcsrf tokenが存在しない場合' do
+        it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse, name: 'stock1')
+  
+          expect { patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id) }.to raise_error(ActionController::InvalidAuthenticityToken)
+        end
+      end
     end
   end
 

@@ -142,6 +142,13 @@ RSpec.describe Api::V1::StocksController, type: :request do
           expect(Stock.all.size - prev_stock_size).to eq 0
         end
       end
+
+      context 'リクエストにcsrf tokenが存在しない場合' do
+        it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
+          _, token = login
+          expect { post api_v1_stocks_path, params: params }.to raise_error(ActionController::InvalidAuthenticityToken)
+        end
+      end
     end
   end
 

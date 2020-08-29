@@ -2,10 +2,20 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
   describe 'GET	/api/v1/stocks' do
+    let!(:storehouse) { create(:storehouse) }
+
     context '未ログイン時' do
-      it 'HTTPステータスが401であること' do
+      it '401 Unauthorizedを返すこと' do
+        stock = create(:stock, storehouse: storehouse)
         get api_v1_stocks_path
-        expect(response).to have_http_status 401
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'エラーメッセージを返すこと' do
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        get api_v1_stocks_path
+
+        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
 
@@ -52,8 +62,15 @@ RSpec.describe Api::V1::StocksController, type: :request do
         storehouse = create(:storehouse)
         post api_v1_stocks_path, params: params
 
-        expect(response).to have_http_status 401
+        expect(response).to have_http_status(:unauthorized)
       end
+
+      it 'エラーメッセージを返すこと' do
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        post api_v1_stocks_path, params: params
+
+        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+    end
     end
 
     context 'ログイン済みの場合' do
@@ -153,14 +170,21 @@ RSpec.describe Api::V1::StocksController, type: :request do
   end
 
   describe 'GET /api/v1/stocks/:id' do
-    context '未ログインの場合' do
-      it 'HTTPステータスが401であること' do
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+    let!(:storehouse) { create(:storehouse) }
 
+    context '未ログインの場合' do
+      it '401 Unauthorizedを返すこと' do
+        stock = create(:stock, storehouse: storehouse)
         get api_v1_stock_path(stock.id)
 
-        expect(response).to have_http_status 401
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'エラーメッセージを返すこと' do
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        get api_v1_stock_path(stock.id)
+
+        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
 
@@ -190,13 +214,9 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'PATCH /api/v1/stocks/:id' do
     context '未ログインの場合' do
-      it 'HTTPステータスが401であること' do
-        storehouse = create(:storehouse)
-
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
-
-        params = {
+      let!(:storehouse) { create(:storehouse) }
+      let!(:params) do 
+        {
           name: 'stock1-a',
           colorNumber: '123',
           condition: "used",
@@ -204,10 +224,23 @@ RSpec.describe Api::V1::StocksController, type: :request do
           quantity: 20,
           storehouse_id: storehouse.id,
         }
+      end
 
+      it '401 Unauthorizedを返すこと' do
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
         patch api_v1_stock_path(stock.id), params: params
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'エラーメッセージを返すこと' do
+        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        post api_v1_stocks_path, params: params
+
+        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
+    
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         _, token = login
@@ -272,14 +305,20 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'DELETE /api/v1/stocks/:id' do
     context '未ログインの場合' do
-      it 'HTTPステータスが401であること' do
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+      let!(:storehouse) { create(:storehouse) }
 
-        prev_stock_size = Stock.all.length
+      it '401 Unauthorizedを返すこと' do
+        stock = create(:stock, storehouse: storehouse)
         delete api_v1_stock_path(stock.id)
 
         expect(response).to have_http_status 401
+      end
+
+      it 'エラーメッセージを返すこと' do
+        stock = create(:stock, storehouse: storehouse)
+        delete api_v1_stock_path(stock.id)
+
+        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
 

@@ -283,13 +283,51 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
     
     context 'ログイン済みの場合' do
-      it 'HTTPステータスが200 OKであること' do
-        _, token = login
-        stock = create(:stock, :with_storehouse, name: 'stock1')
+      context '必要なパラメーターが全て揃っている場合' do
+        it 'HTTPステータスが200 OKであること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse, name: 'stock1')
+  
+          patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
+          expect(response.status).to eq 200
+        end
 
-        patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
+        it '正しいレスポンスが返ってくること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse, name: 'stock1')
+  
+          params = create_params(stock.storehouse.id)
+          patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+          actual = JSON.parse(response.body).deep_symbolize_keys
 
-        expect(response.status).to eq 200
+          expect(actual.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
+          expect(actual[:storehouse].keys.sort).to eq [:id, :name]
+
+          expect(actual[:name]).to eq params[:name]
+          expect(actual[:colorNumber]).to eq params[:colorNumber]
+          expect(Time.zone.parse(actual[:manufacturingDate])).to eq Time.zone.parse(params[:manufacturingDate])
+          expect(actual[:quantity]).to eq params[:quantity]
+          expect(actual[:condition]).to eq params[:condition]
+          expect(actual[:storehouse][:name]).to eq stock.storehouse.name
+          expect(actual[:file]).to eq nil
+        end
+
+        it '変更した値がデータに反映されていること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse, name: 'stock1')
+
+          params = create_params(stock.storehouse.id)
+          patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+
+          actual = Stock.find(stock.id)
+          expect(actual.name).to eq params[:name]
+          expect(actual.color_number).to eq params[:colorNumber]
+          expect(Time.zone.parse(actual.manufacturing_date.to_s)).to eq Time.zone.parse(params[:manufacturingDate])
+          expect(actual.quantity).to eq params[:quantity]
+          expect(actual.condition).to eq params[:condition]
+          expect(actual.storehouse.name).to eq stock.storehouse.name
+          expect(actual.file.size).to eq 0
+        end
       end
 
       it 'HTTPステータスが422 であること' do

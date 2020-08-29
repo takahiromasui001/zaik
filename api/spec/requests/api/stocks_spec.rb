@@ -2,17 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
   describe 'GET	/api/v1/stocks' do
-    let!(:storehouse) { create(:storehouse) }
-
     context '未ログイン時' do
       it '401 Unauthorizedを返すこと' do
-        stock = create(:stock, storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         get api_v1_stocks_path
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         get api_v1_stocks_path
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
@@ -23,7 +21,10 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'HTTPステータスが200 OKであること' do
         login
         storehouse = create(:storehouse)
-        3.times { |n| create(:stock, name: "stock#{n}", storehouse: storehouse) }
+        # 3.times { |n| create(:stock, name: "stock#{n}", :with_storehouse) }
+        3.times do |n|
+          create(:stock, :with_storehouse, name: "stock#{n}")
+        end
 
         get api_v1_stocks_path
         actual = JSON.parse(response.body).map { |n| n.symbolize_keys }
@@ -59,14 +60,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
-        storehouse = create(:storehouse)
         post api_v1_stocks_path, params: params
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
         post api_v1_stocks_path, params: params
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
@@ -112,7 +111,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       context 'name パラメータが既存のいずれかのstockと重複している場合' do
         it '422 Unprocessable Entityを返すこと' do
-          create(:stock, name: params[:name], storehouse: storehouse)
+          create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
@@ -120,7 +119,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
 
         it 'エラーメッセージを返すこと' do
-          create(:stock, name: params[:name], storehouse: storehouse)
+          create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
@@ -128,7 +127,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
 
         it '在庫が増減しないこと' do
-          create(:stock, name: params[:name], storehouse: storehouse)
+          create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
           prev_stock_size = Stock.all.size
@@ -170,18 +169,16 @@ RSpec.describe Api::V1::StocksController, type: :request do
   end
 
   describe 'GET /api/v1/stocks/:id' do
-    let!(:storehouse) { create(:storehouse) }
-
     context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
-        stock = create(:stock, storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         get api_v1_stock_path(stock.id)
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         get api_v1_stock_path(stock.id)
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
@@ -191,8 +188,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+          stock = create(:stock, :with_storehouse)
 
         get api_v1_stock_path(stock.id)
 
@@ -202,7 +198,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'HTTPステータスが404 であること' do
         login
         storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
 
         unused_stockid = Stock.ids.last + 1
         get api_v1_stock_path(unused_stockid)
@@ -213,9 +209,9 @@ RSpec.describe Api::V1::StocksController, type: :request do
   end
 
   describe 'PATCH /api/v1/stocks/:id' do
-    context '未ログインの場合' do
-      let!(:storehouse) { create(:storehouse) }
-      let!(:params) do 
+    let!(:storehouse) { create(:storehouse) }
+
+    def create_params(storehouse_id)
         {
           name: 'stock1-a',
           colorNumber: '123',
@@ -224,18 +220,19 @@ RSpec.describe Api::V1::StocksController, type: :request do
           quantity: 20,
           storehouse_id: storehouse.id,
         }
-      end
+    end
 
+    context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
-        patch api_v1_stock_path(stock.id), params: params
+        stock = create(:stock, :with_storehouse)
+        patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id)
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
-        post api_v1_stocks_path, params: params
+        stock = create(:stock, :with_storehouse)
+        post api_v1_stocks_path, params: create_params(stock.storehouse.id)
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
@@ -244,38 +241,18 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         _, token = login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse, name: 'stock1')
 
-        params = {
-          name: 'stock1-a',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-
-        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+        patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
 
         expect(response.status).to eq 200
       end
 
       it 'HTTPステータスが422 であること' do
         _, token = login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
-        stock2 = create(:stock, name: 'stock2', storehouse: storehouse)
-
-        params = {
-          name: 'stock2',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-
+        stock = create(:stock, :with_storehouse, name: 'stock1')
+        stock2 = create(:stock, :with_storehouse, name: 'stock2')
+        params = create_params(stock.id).merge({ name: 'stock2' })
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
         expect(response.status).to eq 422
@@ -283,20 +260,9 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it 'HTTPステータスが404 であること' do
         _, token = login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
-
-        params = {
-          name: 'stock1-a',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-
+        stock = create(:stock, :with_storehouse, name: 'stock1')
         unused_stockid = Stock.ids.last + 1
-        patch api_v1_stock_path(unused_stockid), params: params, headers: { "x-csrf-token": token }
+        patch api_v1_stock_path(unused_stockid), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
 
         expect(response.status).to eq 404
       end
@@ -305,17 +271,15 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'DELETE /api/v1/stocks/:id' do
     context '未ログインの場合' do
-      let!(:storehouse) { create(:storehouse) }
-
       it '401 Unauthorizedを返すこと' do
-        stock = create(:stock, storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         delete api_v1_stock_path(stock.id)
 
         expect(response).to have_http_status 401
       end
 
       it 'エラーメッセージを返すこと' do
-        stock = create(:stock, storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
         delete api_v1_stock_path(stock.id)
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
@@ -325,8 +289,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
     context 'ログイン済みの場合' do
       it 'HTTPステータスが200 OKであること' do
         _, token = login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
 
         prev_stock_size = Stock.all.length
         delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
@@ -337,8 +300,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it 'HTTPステータスが404 OKであること' do
         _, token = login
-        storehouse = create(:storehouse)
-        stock = create(:stock, name: 'stock1', storehouse: storehouse)
+        stock = create(:stock, :with_storehouse)
 
         prev_stock_size = Stock.all.length
         unused_stockid = Stock.ids.last + 1

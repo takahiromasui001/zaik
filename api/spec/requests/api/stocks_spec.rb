@@ -16,7 +16,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         3.times { |n| create(:stock, name: "stock#{n}", storehouse: storehouse) }
 
         get api_v1_stocks_path
-        result = JSON.parse(response.body).map { |n| n.symbolize_keys }
+        actual = JSON.parse(response.body).map { |n| n.symbolize_keys }
 
         expected = [
           { name: 'stock0', file: nil},
@@ -25,10 +25,10 @@ RSpec.describe Api::V1::StocksController, type: :request do
         ]
 
         expect(response).to have_http_status 200
-        expect(result.size).to eq 3
+        expect(actual.size).to eq 3
         3.times { |i|
-          expect(result[i].slice(:name, :file)).to eq expected[i]
-          expect(result[i].keys).to eq [:id, :name, :file]
+          expect(actual[i].slice(:name, :file)).to eq expected[i]
+          expect(actual[i].keys).to eq [:id, :name, :file]
         }
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
 
     context '未ログインの場合' do
-      it 'HTTPステータスが401であること' do
+      it '401 Unauthorizedを返すこと' do
         storehouse = create(:storehouse)
         post api_v1_stocks_path, params: params
 
@@ -68,18 +68,18 @@ RSpec.describe Api::V1::StocksController, type: :request do
           _, token = login
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
 
-          result = JSON.parse(response.body).deep_symbolize_keys
+          actual = JSON.parse(response.body).deep_symbolize_keys
 
-          expect(result.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
-          expect(result[:storehouse].keys.sort).to eq [:id, :name]
+          expect(actual.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
+          expect(actual[:storehouse].keys.sort).to eq [:id, :name]
 
-          expect(result[:name]).to eq params[:name]
-          expect(result[:colorNumber]).to eq params[:colorNumber]
-          expect(Time.zone.parse(result[:manufacturingDate])).to eq Time.zone.parse(params[:manufacturingDate])
-          expect(result[:quantity]).to eq params[:quantity]
-          expect(result[:condition]).to eq params[:condition]
-          expect(result[:storehouse][:name]).to eq storehouse.name
-          expect(result[:file]).to eq nil
+          expect(actual[:name]).to eq params[:name]
+          expect(actual[:colorNumber]).to eq params[:colorNumber]
+          expect(Time.zone.parse(actual[:manufacturingDate])).to eq Time.zone.parse(params[:manufacturingDate])
+          expect(actual[:quantity]).to eq params[:quantity]
+          expect(actual[:condition]).to eq params[:condition]
+          expect(actual[:storehouse][:name]).to eq storehouse.name
+          expect(actual[:file]).to eq nil
         end
 
         it '在庫が新規に登録されていること' do

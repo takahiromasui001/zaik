@@ -103,58 +103,31 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
       end
 
-      context 'name パラメータが不足している場合' do
-        it '404 NotFoundを返すこと' do
+      context 'name パラメータが重複している場合' do
+        let!(:params_without_name) { params.reject { |key, _| key == :name } }
 
+        it '422 Unprocessable Entityを返すこと' do
+          create(:stock, name: params[:name], storehouse: storehouse)
+          _, token = login
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          expect(response).to have_http_status(:unprocessable_entity)
         end
+
         it 'エラーメッセージを返すこと' do
-
+          create(:stock, name: params[:name], storehouse: storehouse)
+          _, token = login
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          expect(JSON.parse(response.body)["message"].first).to eq "Name has already been taken"
         end
+
         it '在庫が増減しないこと' do
+          create(:stock, name: params[:name], storehouse: storehouse)
+          previous_stock_size = Stock.all.size
 
+          _, token = login
+          post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+          expect(Stock.all.size - prev_stock_size).to eq 0
         end
-      end
-
-      it 'HTTPステータスが200 OKであること' do
-        _, token = login
-        storehouse = create(:storehouse)
-
-        params = {
-          name: 'stock1',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
-
-        post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
-
-        expect(response.status).to eq 200
-
-        registered_stock = Stock.find()
-        result = JSON.parse(response.body).symbolize_keys
-        
-        expect(result[:name]).to eq params[:name]
-      end
-
-      it 'HTTPステータスが422 であること' do
-        _, token = login
-        # ActionController::Base.allow_forgery_protection = true
-        storehouse = create(:storehouse)
-
-        params = {
-          name: 'stock1',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          # storehouse_id: storehouse.id,
-        }
-
-        post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
-
-        expect(response.status).to eq 422
       end
     end
   end

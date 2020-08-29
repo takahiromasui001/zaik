@@ -435,16 +435,37 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
       end
 
-      it 'HTTPステータスが404 OKであること' do
-        _, token = login
-        stock = create(:stock, :with_storehouse)
+      context '存在しない在庫の削除を試みた場合' do
+        it 'HTTPステータスが404 OKであること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse)
+  
+          unused_stockid = Stock.ids.last + 1
+          delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
+  
+          expect(response.status).to eq 404
+        end
 
-        prev_stock_size = Stock.all.length
-        unused_stockid = Stock.ids.last + 1
-        delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
+        it '在庫の数に増減が無いこと' do
+          _, token = login
+          stock = create(:stock, :with_storehouse)
+  
+          prev_stock_size = Stock.all.length
+          unused_stockid = Stock.ids.last + 1
+          delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
+  
+          expect(prev_stock_size - Stock.all.length).to eq 0
+        end
+      end
 
-        expect(response.status).to eq 404
-        expect(prev_stock_size - Stock.all.length).to eq 0
+      context 'リクエストにcsrf tokenが存在しない場合' do
+        it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
+          _, token = login
+          stock = create(:stock, :with_storehouse)
+
+          unused_stockid = Stock.ids.last + 1
+          expect { delete api_v1_stock_path(unused_stockid) }.to raise_error(ActionController::InvalidAuthenticityToken)
+        end
       end
     end
   end

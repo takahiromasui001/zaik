@@ -47,9 +47,9 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
   describe 'POST /api/v1/stocks' do
     let!(:storehouse) { create(:storehouse) }
-    let!(:params) do
+    def create_params(storehouse_id)
       {
-        name: 'stock1',
+        name: 'stock1-a',
         colorNumber: '123',
         condition: "used",
         manufacturingDate: "2020-08-03 07:05:12",
@@ -60,13 +60,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
-        post api_v1_stocks_path, params: params
-
+        post api_v1_stocks_path, params: create_params(storehouse.id)
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
-        post api_v1_stocks_path, params: params
+        post api_v1_stocks_path, params: create_params(storehouse.id)
 
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
     end
@@ -76,12 +75,14 @@ RSpec.describe Api::V1::StocksController, type: :request do
       context '必要なパラメーターが全て揃っている場合' do
         it '200 OKを返すこと' do
           _, token = login
+          params = create_params(storehouse.id)
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
           expect(response.status).to eq 200
         end
 
         it '正しいレスポンスを返すこと' do
           _, token = login
+          params = create_params(storehouse.id)
           post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
 
           actual = JSON.parse(response.body).deep_symbolize_keys
@@ -99,6 +100,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
 
         it '在庫が新規に登録されていること' do
+          params = create_params(storehouse.id)
           _, token = login
 
           previous_stock_size = Stock.all.size
@@ -111,6 +113,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       context 'name パラメータが既存のいずれかのstockと重複している場合' do
         it '422 Unprocessable Entityを返すこと' do
+          params = create_params(storehouse.id)
           create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
@@ -119,6 +122,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
 
         it 'エラーメッセージを返すこと' do
+          params = create_params(storehouse.id)
           create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
@@ -127,6 +131,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         end
 
         it '在庫が増減しないこと' do
+          params = create_params(storehouse.id)
           create(:stock,  :with_storehouse, name: params[:name])
 
           _, token = login
@@ -137,7 +142,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       end
 
       context 'storehouseが指定されていない場合' do
-        let!(:params_without_storehouse) { params.reject { |key, _| key == :storehouse_id } }
+        let!(:params_without_storehouse) { create_params(storehouse.id).reject { |key, _| key == :storehouse_id } }
 
         it '422 Unprocessable Entityを返すこと' do
           _, token = login
@@ -161,6 +166,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       context 'リクエストにcsrf tokenが存在しない場合' do
         it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
+          params = create_params(storehouse.id)
           _, token = login
           expect { post api_v1_stocks_path, params: params }.to raise_error(ActionController::InvalidAuthenticityToken)
         end
@@ -249,17 +255,15 @@ RSpec.describe Api::V1::StocksController, type: :request do
   end
 
   describe 'PATCH /api/v1/stocks/:id' do
-    let!(:storehouse) { create(:storehouse) }
-
     def create_params(storehouse_id)
-        {
-          name: 'stock1-a',
-          colorNumber: '123',
-          condition: "used",
-          manufacturingDate: "2020-08-03 07:05:12",
-          quantity: 20,
-          storehouse_id: storehouse.id,
-        }
+      {
+        name: 'stock1-a',
+        colorNumber: '123',
+        condition: "used",
+        manufacturingDate: "2020-08-03 07:05:12",
+        quantity: 20,
+        storehouse_id: storehouse_id,
+      }
     end
 
     context '未ログインの場合' do

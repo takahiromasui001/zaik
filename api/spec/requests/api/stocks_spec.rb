@@ -289,11 +289,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
       end
 
       it '正しいレスポンスが返ってくること' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
   
         params = create_params(stock.storehouse.id)
+        _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
+
         actual = JSON.parse(response.body).deep_symbolize_keys
 
         expect(actual.keys.sort).to eq [:colorNumber, :condition, :file, :id, :manufacturingDate, :name, :quantity, :storehouse]
@@ -316,6 +317,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
         actual = Stock.find(stock.id)
+
         expect(actual.name).to eq params[:name]
         expect(actual.color_number).to eq params[:colorNumber]
         expect(Time.zone.parse(actual.manufacturing_date.to_s)).to eq Time.zone.parse(params[:manufacturingDate])

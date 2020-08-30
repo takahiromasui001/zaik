@@ -405,20 +405,21 @@ RSpec.describe Api::V1::StocksController, type: :request do
       end
     end
 
-    context '登録済みの在庫を削除する場合' do
+    context '登録済みの在庫の削除を試みた場合' do
       it '200 OKを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse)
 
+        _, token = login
         delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
+
         expect(response.status).to eq 200
       end
 
       it '指定した在庫が削除されること' do
-        _, token = login
         stock = create(:stock, :with_storehouse)
-
         prev_stock_size = Stock.all.length
+
+        _, token = login
         delete api_v1_stock_path(stock.id), headers: { "x-csrf-token": token }
 
         expect(prev_stock_size - Stock.all.length).to eq 1

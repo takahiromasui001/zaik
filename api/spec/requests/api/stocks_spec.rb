@@ -280,10 +280,11 @@ RSpec.describe Api::V1::StocksController, type: :request do
     
     context '必要なパラメーターが全て揃っている場合' do
       it '200 OKを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
   
-        patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
+        params = create_params(stock.storehouse.id)
+        _, token = login
+        patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
         expect(response.status).to eq 200
       end
 

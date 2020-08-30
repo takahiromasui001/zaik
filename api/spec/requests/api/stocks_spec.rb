@@ -187,30 +187,28 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it '401 Unauthorizedを返すこと' do
         stock = create(:stock, :with_storehouse)
         get api_v1_stock_path(stock.id)
-
         expect(response).to have_http_status(:unauthorized)
       end
 
       it 'エラーメッセージを返すこと' do
         stock = create(:stock, :with_storehouse)
         get api_v1_stock_path(stock.id)
-
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
 
     context '存在する在庫の取得を試みた場合' do
       it '200 OKを返すこと' do
-        login
         stock = create(:stock, :with_storehouse, params)
+        login
         get api_v1_stock_path(stock.id)
         expect(response).to have_http_status(:ok)
       end
 
       it '正しいレスポンスを返すこと' do
-        login
         stock = create(:stock, :with_storehouse, params)
 
+        login
         get api_v1_stock_path(stock.id)
         actual = JSON.parse(response.body).deep_symbolize_keys
 
@@ -229,20 +227,20 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context '存在しない在庫の取得を試みた場合' do
       it '404 Not Foundを返すこと' do
-        login
         create(:stock, :with_storehouse)
-        unused_stockid = Stock.ids.last + 1
 
+        login
+        unused_stockid = Stock.ids.last + 1
         get api_v1_stock_path(unused_stockid)
 
         expect(response.status).to eq 404
       end
 
       it 'エラーメッセージを返すこと' do
-        login
         create(:stock, :with_storehouse)
-        unused_stockid = Stock.ids.last + 1
 
+        login
+        unused_stockid = Stock.ids.last + 1
         get api_v1_stock_path(unused_stockid)
 
         expect(JSON.parse(response.body)["message"]).to eq 'record not found'
@@ -310,10 +308,10 @@ RSpec.describe Api::V1::StocksController, type: :request do
       end
 
       it '変更した値がデータに反映されていること' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
 
         params = create_params(stock.storehouse.id)
+        _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
         actual = Stock.find(stock.id)
@@ -330,33 +328,33 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context 'name パラメータが既存のいずれかのstockと重複している場合' do
       it '422 Unprocessable Entityを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
         stock2 = create(:stock, :with_storehouse, name: 'stock2')
         params = create_params(stock.storehouse.id).merge({ name: 'stock2' })
 
+        _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
   
         expect(response.status).to eq 422
       end
 
       it 'エラーメッセージを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
         stock2 = create(:stock, :with_storehouse, name: 'stock2')
         params = create_params(stock.storehouse.id).merge({ name: 'stock2' })
 
+        _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
         expect(JSON.parse(response.body)["message"].first).to eq 'Name has already been taken'
       end
 
       it '在庫が更新されていないこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
         stock2 = create(:stock, :with_storehouse, name: 'stock2')
         params = create_params(stock.storehouse.id).merge({ name: 'stock2' })
 
+        _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
         expect(Stock.find(stock.id).name).to eq 'stock1'
@@ -365,18 +363,20 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context '存在しない在庫に対して更新を試みた場合' do
       it '404 NotFoundを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
+
         unused_stockid = Stock.ids.last + 1
+        _, token = login
         patch api_v1_stock_path(unused_stockid), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
 
         expect(response.status).to eq 404
       end
 
       it 'エラーメッセージを返すこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
+
         unused_stockid = Stock.ids.last + 1
+        _, token = login
         patch api_v1_stock_path(unused_stockid), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
 
         expect(JSON.parse(response.body)["message"]).to eq 'record not found'

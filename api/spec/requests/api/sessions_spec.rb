@@ -54,17 +54,27 @@ RSpec.describe Api::V1::SessionsController, type: :request do
   describe 'GET /api/v1/logged_in' do
     context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
+        get api_v1_logged_in_path
+        expect(response.status).to eq 401
       end
 
       it 'エラーメッセージを返すこと' do
+        get api_v1_logged_in_path
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 
     context 'ログイン済みの場合' do
       it '200 OKを返すこと' do
+        login
+        get api_v1_logged_in_path
+        expect(response.status).to eq 200
       end
 
       it '正しいレスポンスを返すこと' do
+        login
+        get api_v1_logged_in_path
+        expect(JSON.parse(response.body)['message']).to eq 'logged in'
       end
     end
   end

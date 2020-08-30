@@ -54,7 +54,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         condition: "used",
         manufacturingDate: "2020-08-03 07:05:12",
         quantity: 20,
-        storehouse_id: storehouse.id,
+        storehouse_id: storehouse_id,
       }
     end
 
@@ -66,22 +66,21 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it 'エラーメッセージを返すこと' do
         post api_v1_stocks_path, params: create_params(storehouse.id)
-
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end
 
     context '必要なパラメーターが全て揃っている場合' do
       it '200 OKを返すこと' do
-        _, token = login
         params = create_params(storehouse.id)
+        _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
         expect(response.status).to eq 200
       end
 
       it '正しいレスポンスを返すこと' do
-        _, token = login
         params = create_params(storehouse.id)
+        _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
 
         actual = JSON.parse(response.body).deep_symbolize_keys
@@ -100,12 +99,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it '在庫が新規に登録されていること' do
         params = create_params(storehouse.id)
-        _, token = login
-
         previous_stock_size = Stock.all.size
-        post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
-        stock_size = Stock.all.size
 
+        _, token = login
+        post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+
+        stock_size = Stock.all.size
         expect(stock_size - previous_stock_size).to eq 1
       end
     end
@@ -117,6 +116,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
         _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -126,6 +126,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
         _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+
         expect(JSON.parse(response.body)["message"].first).to eq "Name has already been taken"
       end
 
@@ -133,9 +134,10 @@ RSpec.describe Api::V1::StocksController, type: :request do
         params = create_params(storehouse.id)
         create(:stock,  :with_storehouse, name: params[:name])
 
-        _, token = login
         prev_stock_size = Stock.all.size
+        _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
+
         expect(Stock.all.size - prev_stock_size).to eq 0
       end
     end
@@ -156,8 +158,8 @@ RSpec.describe Api::V1::StocksController, type: :request do
       end
 
       it '在庫が増減しないこと' do
-        _, token = login
         prev_stock_size = Stock.all.size
+        _, token = login
         post api_v1_stocks_path, params: params_without_storehouse, headers: { "x-csrf-token": token }
         expect(Stock.all.size - prev_stock_size).to eq 0
       end

@@ -19,13 +19,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
     context 'ログイン時' do
       it 'HTTPステータスが200 OKであること' do
-        login
         storehouse = create(:storehouse)
-        # 3.times { |n| create(:stock, name: "stock#{n}", :with_storehouse) }
         3.times do |n|
           create(:stock, :with_storehouse, name: "stock#{n}")
         end
 
+        login
         get api_v1_stocks_path
         actual = JSON.parse(response.body).map { |n| n.symbolize_keys }
 

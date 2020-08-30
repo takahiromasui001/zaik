@@ -60,7 +60,7 @@ RSpec.describe Api::V1::SessionsController, type: :request do
         expect(JSON.parse(response.body)['message']).to eq 'ユーザ名またはパスワードに誤りがあります。'
       end
 
-      it 'ログイン確認が失敗すること' do
+      it 'ログイン確認に失敗すること' do
         user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password_false' }
 
@@ -73,25 +73,44 @@ RSpec.describe Api::V1::SessionsController, type: :request do
   describe 'DELETE /api/v1/logout' do
     context '未ログインの場合' do
       it '401 Unauthorizedを返すこと' do
+        delete api_v1_logout_path
+        expect(response.status).to eq 401
       end
 
       it 'エラーメッセージを返すこと' do
+        delete api_v1_logout_path
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 
     context 'ログイン済みの場合' do
       it '200 OKを返すこと' do
+        _, token = login
+        delete api_v1_logout_path, headers: { 'x-csrf-token': token }
+        expect(response.status).to eq 200
       end
 
       it 'ログアウト成功のメッセージを返すこと' do
+        _, token = login
+        delete api_v1_logout_path, headers: { 'x-csrf-token': token }
+        expect(JSON.parse(response.body)['message']).to eq 'logout succeed'
       end
 
       it 'ログイン確認に失敗すること' do
+        _, token = login
+        expect(response.status).to eq 200
+
+        delete api_v1_logout_path, headers: { 'x-csrf-token': token }
+
+        get api_v1_logged_in_path
+        expect(response.status).to eq 401
       end
     end
 
     context 'リクエストにcsrf tokenが存在しない場合' do
       it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
+        _, token = login
+        expect{ delete api_v1_logout_path }.to raise_error(ActionController::InvalidAuthenticityToken)
       end
     end
   end

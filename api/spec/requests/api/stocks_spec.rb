@@ -428,24 +428,22 @@ RSpec.describe Api::V1::StocksController, type: :request do
     end
 
     context '存在しない在庫の削除を試みた場合' do
-      it 'HTTPステータスが404 OKであること' do
-        _, token = login
-        stock = create(:stock, :with_storehouse)
-  
+      def delete_nonexistent_stock
         unused_stockid = Stock.ids.last + 1
+        _, token = login
         delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
-  
+      end
+
+      it 'HTTPステータスが404 OKであること' do
+        stock = create(:stock, :with_storehouse)
+        delete_nonexistent_stock
         expect(response.status).to eq 404
       end
 
       it '在庫の数に増減が無いこと' do
-        _, token = login
         stock = create(:stock, :with_storehouse)
-  
         prev_stock_size = Stock.all.length
-        unused_stockid = Stock.ids.last + 1
-        delete api_v1_stock_path(unused_stockid), headers: { "x-csrf-token": token }
-  
+        delete_nonexistent_stock
         expect(prev_stock_size - Stock.all.length).to eq 0
       end
     end

@@ -395,14 +395,12 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it '401 Unauthorizedを返すこと' do
         stock = create(:stock, :with_storehouse)
         delete api_v1_stock_path(stock.id)
-
         expect(response).to have_http_status 401
       end
 
       it 'エラーメッセージを返すこと' do
         stock = create(:stock, :with_storehouse)
         delete api_v1_stock_path(stock.id)
-
         expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
       end
     end

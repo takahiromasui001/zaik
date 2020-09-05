@@ -20,6 +20,7 @@ jobs:
     services:
       mysql:
         image: mysql:8.0.17
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ROOT_PASSWORD=xxx -e MYSQL_USER=xxx -e MYSQL_PASSWORD=xxx -e MYSQL_DATABASE=xxx --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
         env:
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
@@ -37,9 +38,6 @@ jobs:
       #   uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       #   with:
       #     ruby-version: 2.6.3
-      - name: Setup container
-        run: |
-          apk --update add build-base libxml2-dev libxslt-dev mysql-dev mysql-client openssl tzdata
       - name: bundle install
         run: |
           gem install bundler

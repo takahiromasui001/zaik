@@ -43,8 +43,8 @@ jobs:
         working-directory: ./api
       - name: db create & Run tests
         run: |
-          bundle exec rails db:create
-          run: bundle exec rspec
+          bundle exec rails db:create db:schema:load --trace
+          bundle exec rspec
         working-directory: ./api
         env:
           RAILS_ENV: test

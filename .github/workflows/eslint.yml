@@ -8,7 +8,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  eslint:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +21,5 @@ jobs:
         run: yarn --frozen-lockfile
         working-directory: ./client
       - name: eslint
-        run: yarn eslint .
+        run: yarn eslint . --ext .tsx --ext .ts
         working-directory: ./client

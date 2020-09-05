@@ -39,7 +39,7 @@ jobs:
       #     ruby-version: 2.6.3
           - name: Setup container
       run: |
-        apk --update add build-base libxml2-dev libxslt-dev mysql-dev mysql-client openssl tzdata && \
+        apk --update add build-base libxml2-dev libxslt-dev mysql-dev mysql-client openssl tzdata
       - name: bundle install
         run: |
           gem install bundler

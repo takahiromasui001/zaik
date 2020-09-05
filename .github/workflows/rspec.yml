@@ -31,5 +31,7 @@ jobs:
       run: cd api
     - name: Install dependencies
       run: bundle install
+      working-directory: ./api
     - name: Run tests
       run: bundle exec rspec
+      working-directory: ./api

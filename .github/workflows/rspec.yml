@@ -18,7 +18,12 @@ jobs:
     services:
       mysql:
         image: mysql:8.0.17
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_USER=root --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
+        options: |
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+          --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
         env:
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
@@ -29,13 +34,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      # - name: Set up Ruby
-      #   # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-      #   # change this to (see https://github.com/ruby/setup-ruby#versioning):
-      #   # uses: ruby/setup-ruby@v1
-      #   uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
-      #   with:
-      #     ruby-version: 2.6.3
       - name: bundle install
         run: |
           gem install bundler

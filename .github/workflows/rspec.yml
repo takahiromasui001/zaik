@@ -5,16 +5,14 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: Ruby
+name: RSpec
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
 jobs:
-  test:
+  rspec:
     runs-on: ubuntu-latest
 
     services:
@@ -41,8 +39,6 @@ jobs:
       - name: bundle install
         run: |
           gem install bundler
-      - name: cd api
-        run: cd api
       - name: Install dependencies
         run: bundle install
         working-directory: ./api

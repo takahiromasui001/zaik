@@ -25,6 +25,8 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
 
     steps:
+      - env:
+          RAILS_ENV: test
       - uses: actions/checkout@v2
       - name: Set up Ruby
         # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,

@@ -25,8 +25,6 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
 
     steps:
-      - env:
-          RAILS_ENV: test
       - uses: actions/checkout@v2
       - name: Set up Ruby
         # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
@@ -43,9 +41,10 @@ jobs:
       - name: set database.yml
         run: cp -v config/database.ci.yml config/database.yml
         working-directory: ./api
-      - name: db create
-        run: bundle exec rails db:create
+      - name: db create & Run tests
+        run: |
+          bundle exec rails db:create
+          run: bundle exec rspec
         working-directory: ./api
-      - name: Run tests
-        run: bundle exec rspec
-        working-directory: ./api
+        env:
+          RAILS_ENV: test

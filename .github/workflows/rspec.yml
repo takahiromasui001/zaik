@@ -40,8 +40,10 @@ jobs:
         working-directory: ./api
       - name: set database.yml
         run: cp -v config/database.ci.yml config/database.yml
+        working-directory: ./api
       - name: db create
         run: bundle exec rails db:create
+        working-directory: ./api
       - name: Run tests
         run: bundle exec rspec
         working-directory: ./api

@@ -38,6 +38,10 @@ jobs:
       - name: Install dependencies
         run: bundle install
         working-directory: ./api
+      - name: set database.yml
+        run: cp -v config/database.ci.yml config/database.yml
+      - name: db create
+        run: bundle exec rails db:create
       - name: Run tests
         run: bundle exec rspec
         working-directory: ./api

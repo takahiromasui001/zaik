@@ -6,19 +6,19 @@ RSpec.describe Api::V1::SessionsController, type: :request do
   describe 'POST /api/v1/login' do
     context 'ユーザ名 & パスワードが正しい場合' do
       it '200 OKを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password' }
         expect(response.status).to eq 200
       end
 
       it 'ログイン成功を表すメッセージを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password' }
         expect(JSON.parse(response.body)['message']).to eq 'login succeed'
       end
 
       it 'ログイン確認が成功すること' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password' }
 
         get api_v1_logged_in_path
@@ -29,19 +29,19 @@ RSpec.describe Api::V1::SessionsController, type: :request do
 
     context 'ユーザ名が誤っている場合' do
       it '401 Unauthorizedを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user_false', password: 'login_user_password' }
         expect(response.status).to eq 401
       end
 
       it 'エラーメッセージを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user_false', password: 'login_user_password' }
         expect(JSON.parse(response.body)['message']).to eq 'ユーザ名またはパスワードに誤りがあります。'
       end
 
       it 'ログイン確認が失敗すること' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user_false', password: 'login_user_password' }
 
         get api_v1_logged_in_path
@@ -51,19 +51,19 @@ RSpec.describe Api::V1::SessionsController, type: :request do
 
     context 'パスワードが誤っている場合' do
       it '401 Unauthorizedを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password_false' }
         expect(response.status).to eq 401
       end
 
       it 'エラーメッセージを返すこと' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password_false' }
         expect(JSON.parse(response.body)['message']).to eq 'ユーザ名またはパスワードに誤りがあります。'
       end
 
       it 'ログイン確認に失敗すること' do
-        user = create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
+        create(:user, name: 'login_user', password: 'login_user_password', password_confirmation: 'login_user_password')
         post api_v1_login_path, params: { name: 'login_user', password: 'login_user_password_false' }
 
         get api_v1_logged_in_path
@@ -111,7 +111,7 @@ RSpec.describe Api::V1::SessionsController, type: :request do
 
     context 'リクエストにcsrf tokenが存在しない場合' do
       it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
-        _, token = login
+        login
         expect { delete api_v1_logout_path }.to raise_error(ActionController::InvalidAuthenticityToken)
       end
     end

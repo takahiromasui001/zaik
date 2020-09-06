@@ -5,31 +5,47 @@
 # This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
 # For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
 
-name: Ruby
+name: RSpec
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  test:
-
+  rspec:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0.17
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+          -e MYSQL_ALLOW_EMPTY_PASSWORD=yes
+          -e MYSQL_USER=root
+          --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
+    container:
+      image: ruby:2.6.3
+      env:
+        RAILS_ENV: test
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-    # change this to (see https://github.com/ruby/setup-ruby#versioning):
-    # uses: ruby/setup-ruby@v1
-      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
-      with:
-        ruby-version: 2.6
-    - name: cd api
-      run: cd api
-    - name: Install dependencies
-      run: bundle install
-    - name: Run tests
-      run: bundle exec rspec
+      - uses: actions/checkout@v2
+      - name: bundle install
+        run: |
+          gem install bundler
+      - name: Install dependencies
+        run: bundle install
+        working-directory: ./api
+      - name: set database.yml
+        run: cp -v config/database.ci.yml config/database.yml
+        working-directory: ./api
+      - name: db create & Run tests
+        run: |
+          bundle exec rails db:create db:schema:load --trace
+          bundle exec rspec
+        working-directory: ./api
+        env:
+          RAILS_ENV: test

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class StocksController < ApplicationController
@@ -44,30 +46,29 @@ module Api
       end
 
       private
+        def set_stock
+          @stock = Stock.find(params[:id])
+        end
 
-      def set_stock
-        @stock = Stock.find(params[:id])
-      end
+        def stock_params
+          params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :condition, :storehouse, :stock)
+        end
 
-      def stock_params
-        params.permit(:name, :storehouse_id, :id, :file, :colorNumber, :manufacturingDate, :quantity, :condition, :storehouse, :stock)
-      end
-
-      def stock_response(stock)
-        {
-          id: stock.id,
-          name: stock.name,
-          colorNumber: stock.color_number,
-          manufacturingDate: stock.manufacturing_date,
-          quantity: stock.quantity,
-          condition: stock.condition,
-          storehouse: {
-            id: stock.storehouse.id,
-            name: stock.storehouse.name
-          },
-          file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
-        }
-      end
+        def stock_response(stock)
+          {
+            id: stock.id,
+            name: stock.name,
+            colorNumber: stock.color_number,
+            manufacturingDate: stock.manufacturing_date,
+            quantity: stock.quantity,
+            condition: stock.condition,
+            storehouse: {
+              id: stock.storehouse.id,
+              name: stock.storehouse.name
+            },
+            file: stock.file.present? ? Base64.encode64(stock.file.first.download) : nil
+          }
+        end
     end
   end
 end

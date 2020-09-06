@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class SessionsController < ApplicationController
@@ -18,7 +20,7 @@ module Api
 
       def delete
         session.delete(:user_id)
-        render json: { message: 'logout succeed'}
+        render json: { message: 'logout succeed' }
       end
 
       def show

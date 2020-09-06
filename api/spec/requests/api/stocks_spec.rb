@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Api::V1::StocksController, type: :request do
@@ -13,7 +15,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         stock = create(:stock, :with_storehouse)
         get api_v1_stocks_path
 
-        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 
@@ -50,8 +52,8 @@ RSpec.describe Api::V1::StocksController, type: :request do
       {
         name: 'stock1-a',
         colorNumber: '123',
-        condition: "used",
-        manufacturingDate: "2020-08-03 07:05:12",
+        condition: 'used',
+        manufacturingDate: '2020-08-03 07:05:12',
         quantity: 20,
         storehouse_id: storehouse_id,
       }
@@ -65,7 +67,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it 'エラーメッセージを返すこと' do
         post api_v1_stocks_path, params: create_params(storehouse.id)
-        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 
@@ -126,7 +128,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         _, token = login
         post api_v1_stocks_path, params: params, headers: { "x-csrf-token": token }
 
-        expect(JSON.parse(response.body)["message"].first).to eq "Name has already been taken"
+        expect(JSON.parse(response.body)['message'].first).to eq 'Name has already been taken'
       end
 
       it '在庫が増減しないこと' do
@@ -153,7 +155,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'エラーメッセージを返すこと' do
         _, token = login
         post api_v1_stocks_path, params: params_without_storehouse, headers: { "x-csrf-token": token }
-        expect(JSON.parse(response.body)["message"].first).to eq "Storehouse must exist"
+        expect(JSON.parse(response.body)['message'].first).to eq 'Storehouse must exist'
       end
 
       it '在庫が増減しないこと' do
@@ -178,8 +180,8 @@ RSpec.describe Api::V1::StocksController, type: :request do
       {
         name: 'stock1-a',
         color_number: '123',
-        condition: "used",
-        manufacturing_date: "2020-08-03 07:05:12",
+        condition: 'used',
+        manufacturing_date: '2020-08-03 07:05:12',
         quantity: 20,
       }
     end
@@ -194,7 +196,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'エラーメッセージを返すこと' do
         stock = create(:stock, :with_storehouse)
         get api_v1_stock_path(stock.id)
-        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 
@@ -244,7 +246,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         unused_stockid = Stock.ids.last + 1
         get api_v1_stock_path(unused_stockid)
 
-        expect(JSON.parse(response.body)["message"]).to eq 'record not found'
+        expect(JSON.parse(response.body)['message']).to eq 'record not found'
       end
     end
   end
@@ -254,8 +256,8 @@ RSpec.describe Api::V1::StocksController, type: :request do
       {
         name: 'stock1-a',
         colorNumber: '123',
-        condition: "used",
-        manufacturingDate: "2020-08-03 07:05:12",
+        condition: 'used',
+        manufacturingDate: '2020-08-03 07:05:12',
         quantity: 20,
         storehouse_id: storehouse_id,
       }
@@ -273,14 +275,14 @@ RSpec.describe Api::V1::StocksController, type: :request do
         stock = create(:stock, :with_storehouse)
         post api_v1_stocks_path, params: create_params(stock.storehouse.id)
 
-        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
-    
+
     context '必要なパラメーターが全て揃っている場合' do
       it '200 OKを返すこと' do
         stock = create(:stock, :with_storehouse, name: 'stock1')
-  
+
         params = create_params(stock.storehouse.id)
         _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
@@ -289,7 +291,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
       it '正しいレスポンスが返ってくること' do
         stock = create(:stock, :with_storehouse, name: 'stock1')
-  
+
         params = create_params(stock.storehouse.id)
         _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
@@ -335,7 +337,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
 
         _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
-  
+
         expect(response.status).to eq 422
       end
 
@@ -347,7 +349,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         _, token = login
         patch api_v1_stock_path(stock.id), params: params, headers: { "x-csrf-token": token }
 
-        expect(JSON.parse(response.body)["message"].first).to eq 'Name has already been taken'
+        expect(JSON.parse(response.body)['message'].first).to eq 'Name has already been taken'
       end
 
       it '在庫が更新されていないこと' do
@@ -380,7 +382,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
         _, token = login
         patch api_v1_stock_path(unused_stockid), params: create_params(stock.storehouse.id), headers: { "x-csrf-token": token }
 
-        expect(JSON.parse(response.body)["message"]).to eq 'record not found'
+        expect(JSON.parse(response.body)['message']).to eq 'record not found'
       end
     end
 
@@ -388,7 +390,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
         _, token = login
         stock = create(:stock, :with_storehouse, name: 'stock1')
-  
+
         expect { patch api_v1_stock_path(stock.id), params: create_params(stock.storehouse.id) }.to raise_error(ActionController::InvalidAuthenticityToken)
       end
     end
@@ -405,7 +407,7 @@ RSpec.describe Api::V1::StocksController, type: :request do
       it 'エラーメッセージを返すこと' do
         stock = create(:stock, :with_storehouse)
         delete api_v1_stock_path(stock.id)
-        expect(JSON.parse(response.body)["message"]).to eq 'unauthorized'
+        expect(JSON.parse(response.body)['message']).to eq 'unauthorized'
       end
     end
 

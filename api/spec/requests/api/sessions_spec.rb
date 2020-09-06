@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Api::V1::SessionsController, type: :request do
@@ -110,7 +112,7 @@ RSpec.describe Api::V1::SessionsController, type: :request do
     context 'リクエストにcsrf tokenが存在しない場合' do
       it 'ActionController::InvalidAuthenticityToken の例外が発生すること' do
         _, token = login
-        expect{ delete api_v1_logout_path }.to raise_error(ActionController::InvalidAuthenticityToken)
+        expect { delete api_v1_logout_path }.to raise_error(ActionController::InvalidAuthenticityToken)
       end
     end
   end

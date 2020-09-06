@@ -15,6 +15,14 @@ AllCops:
     - 'actionmailbox/test/dummy/**/*'
     - 'actiontext/test/dummy/**/*'
     - '**/node_modules/**/*'
+    - bin/*
+    - config/puma.rb
+    - config/unicorn.rb
+    - db/schema.rb
+    - db/migrate/*
+    - db/fixtures/**/*
+    - spec/spec_helper.rb
+    - spec/rails_helper.rb
 
 Performance:
   Exclude:

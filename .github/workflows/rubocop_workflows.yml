@@ -17,7 +17,9 @@ jobs:
 
     container:
       image: ruby:2.6.3
-
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - uses: actions/checkout@v2
       - name: bundle install
@@ -25,7 +27,5 @@ jobs:
           gem install bundler
       - name: Install dependencies
         run: bundle install
-        working-directory: ./api
       - name: Run Rubocop
-        run: ./api
-        working-directory: ./api
+        run: bundle exec rubocop

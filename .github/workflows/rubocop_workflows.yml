@@ -12,7 +12,7 @@ on:
     branches: [master]
 
 jobs:
-  rspec:
+  rubocop:
     runs-on: ubuntu-latest
 
     container:

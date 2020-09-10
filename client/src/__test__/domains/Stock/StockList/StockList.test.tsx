@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-// import { act } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import axios from 'axios'
 
 import StockList from '../../../../domains/Stock/StockList'
@@ -24,5 +24,22 @@ describe('StockList', () => {
     screen.getByText('stock1')
     screen.getByText('stock2')
     screen.getByPlaceholderText('品名で検索')
+  })
+
+  test('品名で検索', async () => {
+    const myMock = jest.fn(() => Promise.resolve({ data: [] }))
+    axios.get.mockImplementation(myMock)
+
+    render(<StockList />)
+
+    const searchWord = '紙'
+    userEvent.type(screen.getByPlaceholderText('品名で検索'), searchWord)
+    userEvent.click(screen.getByRole('img', { name: 'search' }))
+
+    await waitFor(() =>
+      expect(myMock.mock.calls[1][0]).toBe(
+        `http://localhost:3000/api/v1/stocks/?search=${searchWord}`
+      )
+    )
   })
 })

@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import axios from 'axios'
 import StockList from '../../../../domains/Stock/StockList'
 import { omit as _omit } from 'lodash'
+import reactRedux from 'react-redux'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -12,11 +13,13 @@ jest.mock('react-redux', () => {
     useDispatch: () => () => {
       // do nothing
     },
-    useSelector: () => {
-      return { errors: [], stockDetail: {} }
-    },
+    useSelector: jest.fn(() => ({
+      errors: [],
+      stockDetail: {},
+    })),
   }
 })
+const mockedReactRedux = reactRedux as jest.Mocked<typeof reactRedux>
 jest.mock('react-router-dom')
 
 Object.defineProperty(window, 'matchMedia', {
@@ -33,8 +36,8 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-describe('StockList', () => {
-  test('StockListのレンダリング', async () => {
+describe('在庫一覧', () => {
+  test('StockListのレンダリングができること', async () => {
     const stocks = [
       { name: 'stock0', file: null, id: 1 },
       { name: 'stock1', file: null, id: 2 },
@@ -52,7 +55,7 @@ describe('StockList', () => {
     screen.getByPlaceholderText('品名で検索')
   })
 
-  test('品名で検索', async () => {
+  test('品名で検索できること', async () => {
     const myMock = jest.fn((_url) => Promise.resolve({ data: [] }))
     mockedAxios.get.mockImplementation(myMock)
 
@@ -69,7 +72,13 @@ describe('StockList', () => {
     )
   })
 
-  test('新規在庫の登録', async () => {
+  test('項目をクリックすることで詳細画面に遷移すること', () => {
+    // do nothing
+  })
+})
+
+describe('在庫情報の新規登録', () => {
+  const setup = () => {
     // 在庫一覧の表示
     const myGetMock = jest.fn(() => Promise.resolve({ data: [] }))
     mockedAxios.get.mockImplementation(myGetMock)
@@ -82,6 +91,10 @@ describe('StockList', () => {
     mockedAxios.get.mockImplementationOnce(myStorehouseGetMock)
     userEvent.click(screen.getByRole('img', { name: 'plus-circle' }))
     expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
+  }
+
+  test('フォームの入力内容がAPIの引数に正しく渡されること', async () => {
+    setup()
 
     // フォームの入力
     userEvent.type(screen.getByText('品名'), 'stock1')
@@ -101,18 +114,66 @@ describe('StockList', () => {
     userEvent.click(screen.getByText('OK'))
 
     // 実行結果の検証
-    await waitFor(() =>
-      expect(screen.queryByText('在庫情報の新規作成')).not.toBeVisible()
-    )
-    const myPostMockProp = myPostMock.mock
-    const myPostMockArgs = myPostMockProp.calls[0][1]
-    expect(_omit(myPostMockArgs, ['manufacturingDate'])).toEqual({
-      colorNumber: '0004',
-      condition: 'unused',
-      name: 'stock1',
-      quantity: '20',
-      storehouse_id: 1,
+    await waitFor(() => {
+      const myPostMockArgs = myPostMock.mock.calls[0][1]
+
+      expect(_omit(myPostMockArgs, ['manufacturingDate'])).toEqual({
+        colorNumber: '0004',
+        condition: 'unused',
+        name: 'stock1',
+        quantity: '20',
+        storehouse_id: 1,
+      })
+      expect(myPostMockArgs.manufacturingDate.isSame('2020-09-01')).toBe(true)
     })
-    expect(myPostMockArgs.manufacturingDate.isSame('2020-09-01')).toBe(true)
+  })
+
+  describe('新規登録に成功した場合', () => {
+    test('モーダルが閉じ、在庫一覧に登録した在庫が存在すること', async () => {
+      setup()
+
+      // フォーム送信
+      const myPostMock = jest.fn((_url, _values) =>
+        Promise.resolve({ data: { name: 'stock2', id: 1 } })
+      )
+      mockedAxios.post.mockImplementation(myPostMock)
+      userEvent.click(screen.getByText('OK'))
+
+      // 実行結果の検証
+      await waitFor(() => {
+        expect(screen.queryByText('在庫情報の新規作成')).not.toBeVisible()
+      })
+      screen.queryByText('stock2')
+    })
+  })
+
+  describe('新規登録に失敗した場合', () => {
+    test('モーダルにエラーメッセージを表示すること', async () => {
+      setup()
+
+      // フォーム送信
+      const myPostMock = jest.fn((_url, _values) =>
+        Promise.reject({
+          response: {
+            data: {
+              message: ['Storehouse must exist', 'Name has already been taken'],
+            },
+          },
+        })
+      )
+      mockedAxios.post.mockImplementation(myPostMock)
+
+      mockedReactRedux.useSelector.mockImplementation(() => ({
+        errors: ['Storehouse must exist', 'Name has already been taken'],
+        stockDetail: {},
+      }))
+      userEvent.click(screen.getByText('OK'))
+
+      await waitFor(() => {
+        expect(screen.getByText('在庫情報の新規作成')).toBeVisible()
+      })
+      screen.getByText('・Storehouse must exist')
+      screen.getByText('・Name has already been taken')
+    })
   })
 })

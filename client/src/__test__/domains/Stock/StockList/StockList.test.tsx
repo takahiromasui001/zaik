@@ -5,6 +5,7 @@ import axios from 'axios'
 import StockList from '../../../../domains/Stock/StockList'
 import { omit as _omit } from 'lodash'
 import reactRedux from 'react-redux'
+import * as reactRouterDom from 'react-router-dom'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -21,6 +22,9 @@ jest.mock('react-redux', () => {
 })
 const mockedReactRedux = reactRedux as jest.Mocked<typeof reactRedux>
 jest.mock('react-router-dom')
+const mockedReactRouterDom = reactRouterDom as jest.Mocked<
+  typeof reactRouterDom
+>
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -72,8 +76,22 @@ describe('在庫一覧', () => {
     )
   })
 
-  test('項目をクリックすることで詳細画面に遷移すること', () => {
-    // do nothing
+  test('項目をクリックすることでルーティング関数に詳細画面に遷移できること', async () => {
+    const stocks = [{ name: 'stock0', file: null, id: 1 }]
+
+    mockedAxios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: stocks })
+    )
+    const myUseNavigateMock = jest.fn((_to) => {
+      // do nothing
+    })
+    mockedReactRouterDom.useNavigate.mockImplementation(() => myUseNavigateMock)
+
+    render(<StockList />)
+    await waitFor(() => screen.getByText('stock0'))
+
+    userEvent.click(screen.getByText('stock0'))
+    await waitFor(() => expect(myUseNavigateMock.mock.calls[0][0]).toBe('1'))
   })
 })
 

@@ -32,6 +32,10 @@
   },
   "rules": {
     "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
     "@typescript-eslint/prefer-interface": "off",
     "react/jsx-filename-extension": [
       "error",

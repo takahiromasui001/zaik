@@ -12,7 +12,6 @@ type TErrorMessagesProps = {
 
 export const ErrorMessages: React.FC<TErrorMessagesProps> = (props) => {
   const { messages } = props
-  console.log(messages.length)
 
   return (
     <Container>

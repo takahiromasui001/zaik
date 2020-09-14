@@ -90,11 +90,11 @@ describe('在庫情報の新規登録', () => {
     )
     mockedAxios.get.mockImplementationOnce(myStorehouseGetMock)
     userEvent.click(screen.getByRole('img', { name: 'plus-circle' }))
-    expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
   }
 
   test('フォームの入力内容がAPIの引数に正しく渡されること', async () => {
     setup()
+    expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
 
     // フォームの入力
     userEvent.type(screen.getByText('品名'), 'stock1')
@@ -128,9 +128,20 @@ describe('在庫情報の新規登録', () => {
     })
   })
 
+  test('Cancelボタン押下でモーダルが閉じること', async () => {
+    setup()
+    expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
+
+    userEvent.click(screen.getByText('Cancel'))
+    await waitFor(() =>
+      expect(screen.queryByText('在庫情報の新規作成')).not.toBeVisible()
+    )
+  })
+
   describe('新規登録に成功した場合', () => {
     test('モーダルが閉じ、在庫一覧に登録した在庫が存在すること', async () => {
       setup()
+      expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
 
       // フォーム送信
       const myPostMock = jest.fn((_url, _values) =>
@@ -150,6 +161,7 @@ describe('在庫情報の新規登録', () => {
   describe('新規登録に失敗した場合', () => {
     test('モーダルにエラーメッセージを表示すること', async () => {
       setup()
+      expect(screen.queryByText('在庫情報の新規作成')).toBeVisible()
 
       // フォーム送信
       const myPostMock = jest.fn((_url, _values) =>
